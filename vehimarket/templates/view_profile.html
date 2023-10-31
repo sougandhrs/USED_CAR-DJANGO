@@ -1,0 +1,32 @@
+{% extends "nav.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card mt-5">
+        <img src="{{ user.u_profile.url }}" class="card-img-top" alt="Profile Image">
+        <div class="card-body">
+          <h2 class="card-title">{{ user.u_fname }} {{ user.u_lname }}</h2>
+          <hr>
+          <p class="card-text">
+            <strong>Date of Birth:</strong> {{ user.u_dob }}
+          </p>
+          <p class="card-text">
+            <strong>Contact Info:</strong> {{ user.u_contact }}
+          </p>
+          <p class="card-text">
+            <strong>House:</strong> {{ user.u_house }}
+          </p>
+          <p class="card-text">
+            <strong>Place:</strong> {{ user.u_place }}
+          </p>
+          <p class="card-text">
+            <strong>Pincode:</strong> {{ user.u_pin }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
