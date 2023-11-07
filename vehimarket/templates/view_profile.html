@@ -1,14 +1,57 @@
 {% extends "nav.html" %}
 
 {% block content %}
+<style>
+  .profile-card {
+    border: 2px solid #007BFF;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+    padding: 20px;
+  }
+
+  .profile-image {
+    max-width: 200px; 
+    display: block;
+    margin: 0 auto;
+  }
+
+  .card-title {
+    color: #007BFF;
+  }
+
+  .hr-divider {
+    border-top: 1px solid #007BFF;
+  }
+
+  .card-text {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  .profile-heading {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold; /* Add font-weight for thickness */
+    color: #007BFF;
+    margin-bottom: 20px;
+  }
+
+  .profile-card:hover {
+    transform: scale(1.05); /* Increase the size slightly on hover */
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); /* Change box-shadow on hover */
+    border-color: #0056b3; /* Change border color on hover */
+  }
+</style>
+
 <div class="container">
   <div class="row">
     <div class="col-md-6 offset-md-3">
-      <div class="card mt-5">
-        <img src="{{ user.u_profile.url }}" class="card-img-top" alt="Profile Image">
+      <h1 class="profile-heading">PROFILE</h1>
+      <div class="card mt-5 profile-card">
+        <img src="{{ user.u_profile.url }}" class="card-img-top profile-image" alt="Profile Image">
         <div class="card-body">
           <h2 class="card-title">{{ user.u_fname }} {{ user.u_lname }}</h2>
-          <hr>
+          <hr class="hr-divider">
           <p class="card-text">
             <strong>Date of Birth:</strong> {{ user.u_dob }}
           </p>

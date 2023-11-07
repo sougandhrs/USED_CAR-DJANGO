@@ -44,32 +44,221 @@
 <form method="post" action="{% url 'update_profile' %}" enctype="multipart/form-data">
     {% csrf_token %}
     <label>First Name:</label>
-    <input type="text" name="u_fname" value="{{ user.u_fname }}" required>
-
+    <input type="text" name="u_fname" id="fname" value="{{ user.u_fname }}" required>
+    <p id="first_name_error"></p>
     <label>Last Name:</label>
-    <input type="text" name="u_lname" value="{{ user.u_lname }}" required>
-
+    <input type="text" name="u_lname" id="lname" value="{{ user.u_lname }}" required>
+    <p id="last_name_error"></p>
     <label>Date of Birth:</label>
-    <input type="date" name="u_dob" value="{{ dob_initial }}" required>
-
+    <input type="date" name="u_dob" id="date" value="{{ dob_initial }}" required>
+    <p id="date_of_birth_error"></p>
     <label>Contact Info:</label>
-    <input type="text" name="u_contact" value="{{ user.u_contact }}" required>
-
+    <input type="text" name="u_contact" id="contactinfo" value="{{ user.u_contact }}" required>
+    <p id="contact_number_error"></p>
     <label>House:</label>
-    <input type="text" name="u_house" value="{{ user.u_house }}" required>
-
+    <input type="text" name="u_house" id="house" value="{{ user.u_house }}" required>
+    <p id="house_error"></p>
     <label>Place:</label>
-    <input type="text" name="u_place" value="{{ user.u_place }}" required>
-
+    <input type="text" name="u_place" id="place" value="{{ user.u_place }}" required>
+    <p id="place_error"></p>
     <label>Pincode:</label>
-    <input type="text" name="u_pin" value="{{ user.u_pin }}" required>
-
+    <input type="text" name="u_pin" id="pin" value="{{ user.u_pin }}" required>
+    <p id="pincode_error"></p>
     <label>Profile Image:</label>
-    <input type="file" name="u_profile" accept="image/*">
+    <input type="file" name="u_profile" id="photo" accept="image/*">
+    <p id="profile_picture_error"></p>
     {% if user.u_profile %}
         <img src="{{ user.u_profile.url }}" alt="Profile Image" width="100">
     {% endif %}
     <br><br>
     <button type="submit">Update Profile</button>
 </form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var firstName = document.getElementById("fname");
+            var lastName = document.getElementById("lname");
+            var dateOfBirth = document.getElementById("date");
+            var contactNumber = document.getElementById("contactinfo");
+            var house = document.getElementById("house");
+            var place = document.getElementById("place");
+            var pincode = document.getElementById("pin");
+            var profilePicture = document.getElementById("photo");
+
+            var firstNameError = document.getElementById("first_name_error");
+            var lastNameError = document.getElementById("last_name_error");
+            var dateOfBirthError = document.getElementById("date_of_birth_error");
+            var contactNumberError = document.getElementById("contact_number_error");
+            var houseError = document.getElementById("house_error");
+            var placeError = document.getElementById("place_error");
+            var pincodeError = document.getElementById("pincode_error");
+            var profilePictureError = document.getElementById("profile_picture_error");
+
+            // Function to display error messages
+            function displayErrorMessage(fieldElement, errorElement, message) {
+                fieldElement.classList.add("is-invalid");
+                errorElement.textContent = message;
+            }
+
+            // Function to clear error messages
+            function clearErrorMessage(fieldElement, errorElement) {
+                fieldElement.classList.remove("is-invalid");
+                errorElement.textContent = "";
+            }
+
+            // Event listeners for real-time validation
+            firstName.addEventListener("input", function () {
+                clearErrorMessage(firstName, firstNameError);
+                if (firstName.value.trim()=== "") {
+                    displayErrorMessage(firstName, firstNameError, "First name cannot be empty.");
+                } else if (firstName.value.length <= 2) {
+                    displayErrorMessage(firstName, firstNameError, "First name must be longer than 2 characters.");
+                } else if (firstName.value.includes(" ")) {
+                    displayErrorMessage(firstName, firstNameError, "First name cannot contain spaces.");
+                } else if (!/^[A-Za-z]+$/.test(firstName.value)) {
+                    displayErrorMessage(firstName, firstNameError, "First name must contain only characters.");
+                }
+            });
+
+            lastName.addEventListener("input", function () {
+              clearErrorMessage(lastName, lastNameError);
+              if (lastName.value.trim() === "") {
+                displayErrorMessage(lastName, lastNameError, "Last name cannot be empty.");
+              } else if (lastName.value.includes(" ")) {
+                displayErrorMessage(lastName, lastNameError, "Last name cannot contain spaces.");
+              } else if (!/^[A-Za-z]+$/.test(lastName.value)) {
+                displayErrorMessage(lastName, lastNameError, "Last name must contain only characters.");
+              } 
+            });
+            
+        
+            dateOfBirth.addEventListener("input", function () {
+              clearErrorMessage(dateOfBirth, dateOfBirthError);
+              const birthDate = new Date(dateOfBirth.value);
+              const currentDate = new Date();
+              const age = Math.floor((currentDate - birthDate) / 31557600000); // Calculate age in years (approximate)
+        
+              if (isNaN(birthDate.getTime())) {
+                displayErrorMessage(dateOfBirth, dateOfBirthError, "Please enter a valid date of birth.");
+              } else if (age < 18) {
+                displayErrorMessage(dateOfBirth, dateOfBirthError, "You must be at least 18 years old.");
+              }
+            });
+        
+        
+            contactNumber.addEventListener("input", function () {
+              clearErrorMessage(contactNumber, contactNumberError);
+              const contactRegex = /^[0-9]{10}$/; // Allow exactly 10 numeric characters for contact number
+        
+              // Regular expression to match invalid patterns
+              const invalidPatterns = /^(12345|\+1\s?\(\d{3}\)\s?\d{3}-\d{4})$/;
+        
+              if (contactNumber.value.trim() === "") {
+                displayErrorMessage(contactNumber, contactNumberError, "Contact number cannot be empty.");
+              } else if (!contactRegex.test(contactNumber.value)) {
+                displayErrorMessage(contactNumber, contactNumberError, "Please enter a valid 10-digit contact number.");
+              } else if (invalidPatterns.test(contactNumber.value)) {
+                displayErrorMessage(contactNumber, contactNumberError, "Invalid contact number format.");
+              }
+            });
+        
+        
+            
+            house.addEventListener("input", function () {
+              clearErrorMessage(house, houseError);
+              if (house.value.trim() === "") {
+                displayErrorMessage(house, houseError, "House field cannot be empty.");
+              } else if (/^\s/.test(house.value)) { // Check for spaces at the beginning
+                displayErrorMessage(house, houseError, "House name cannot start with spaces.");
+              } else if (/\s/.test(house.value)) {
+                displayErrorMessage(house, houseError, "House name cannot contain spaces.");
+              } else if (!/^[A-Za-z]+$/.test(house.value)) {
+                displayErrorMessage(house, houseError, "House name must contain only characters.");
+              } else {
+                // Valid input, clear any error message
+                clearErrorMessage(house, houseError);
+              }
+            });
+          
+    
+        
+            place.addEventListener("input", function () {
+              clearErrorMessage(place, placeError);
+              if (place.value.trim() === "") {
+                displayErrorMessage(place, placeError, "Place field cannot be empty.");
+              } else if (/^\s/.test(place.value)) { // Check for spaces at the beginning
+                displayErrorMessage(place, placeError, "Place name cannot start with spaces.");
+              } else if (/\s/.test(place.value)) {
+                displayErrorMessage(place, placeError, "Place name cannot contain spaces.");
+              } else if (!/^[A-Za-z]+$/.test(place.value)) {
+                displayErrorMessage(place, placeError, "Place name must contain only characters.");
+              } else {
+                // Valid input, clear any error message
+                clearErrorMessage(place, placeError);
+              }
+            });
+            
+        
+        
+            pincode.addEventListener("input", function () {
+              clearErrorMessage(pincode, pincodeError);
+              const pincodeRegex = /^[1-9][0-9]{5}$/; // Allow only numeric characters for pincode
+              if (pincode.value.trim() === "") {
+                displayErrorMessage(pincode, pincodeError, "Pincode cannot be empty.");
+              } else if (!pincodeRegex.test(pincode.value)) {
+                displayErrorMessage(pincode, pincodeError, "Please enter a valid pincode.");
+              }
+            });
+            
+            profilePicture.addEventListener("change", function () {
+              clearErrorMessage(profilePicture, profilePictureError);
+          
+              const allowedExtensions = ['jpg', 'jpeg', 'png'];
+              const fileInput = this;
+              const fileName = fileInput.value;
+          
+              if (!fileName) {
+                  displayErrorMessage(profilePicture, profilePictureError, "Please select a profile picture.");
+                  return; // Exit the function if the field is empty
+              }
+          
+              const fileExtension = fileName.split('.').pop().toLowerCase();
+          
+              if (allowedExtensions.indexOf(fileExtension) === -1) {
+                  displayErrorMessage(profilePicture, profilePictureError, "Only .jpg and .png files are allowed.");
+                  // Clear the file input
+                  fileInput.value = "";
+              }
+            });
+        
+
+            // Add similar event listeners for other fields...
+
+            // Get a reference to your form
+            var form = document.getElementById("login-form");
+
+            // Add a submit event listener to the form
+            form.addEventListener("submit", function (event) {
+                // Perform your final validation checks here
+
+                if (
+                    !firstNameError.textContent &&
+                    !lastNameError.textContent &&
+                    !dateOfBirthError.textContent &&
+                    !contactNumberError.textContent &&
+                    !houseError.textContent &&
+                    !placeError.textContent &&
+                    !pincodeError.textContent &&
+                    !profilePictureError.textContent
+                ) {
+                    // All fields are valid, allow form submission
+                    return true;
+                } else {
+                    // Prevent form submission if there are validation errors
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
 {% endblock %}
