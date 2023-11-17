@@ -498,7 +498,9 @@
     </div>
 </div>
 <p class="required">* Required Fields</p>
-<p>{{msg}}</p>
+{% for message in messages %}
+<p>{{ message }}</p>
+{% endfor %}
 
 
 
@@ -1137,15 +1139,22 @@
           success:function(response){
             console.log(response.is_available)
             if (response.is_available==true){
-              $('#eemail').html('THIS EMAIL IS NOT REGISTERED')
+              $('#eemail').html('THIS EMAIL IS NOT REGISTERED');
+              return true;
             }
             else
             {
-              $('#eemail').html('THIS EMAIL IS REGISTERED')
+              $('#eemail').html('THIS EMAIL IS REGISTERED');
+              return false;
             }
           }
-        })
+        });
       }
+
+      $('#login-form').on('submit', function () {
+        return checkemail();
+      });
+
     </script>
 
 

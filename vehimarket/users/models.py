@@ -16,4 +16,44 @@ class users(models.Model):
     def __str__(self):
         return self.user.username
 
+class CarListing(models.Model):
+    STATUS_CHOICES = (
+        ('available', 'Available'),
+        ('sold', 'Sold'),
+    )
 
+    FUEL_TYPE_CHOICES = (
+        ('petrol', 'Petrol'),
+        ('diesel', 'Diesel'),
+        ('electric', 'Electric'),
+        ('hybrid', 'Hybrid'),
+    )
+    OWNER_CHOICES = (
+        ('first', 'First'),
+        ('second', 'Second'),
+        ('third','Third'),
+    )
+
+    seller = models.ForeignKey(users, on_delete=models.CASCADE)
+    make = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    year = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
+    date_added = models.DateField(auto_now_add=True)
+    engine_type = models.CharField(max_length=50)
+    transmission_type = models.CharField(max_length=50)
+    exterior_color = models.CharField(max_length=50)
+    interior_color = models.CharField(max_length=50)
+    fuel_type = models.CharField(max_length=50, choices=FUEL_TYPE_CHOICES, default='petrol')
+    kilometer_driven = models.PositiveIntegerField()
+    owner=models.CharField(max_length=10, choices=OWNER_CHOICES,default='first')
+    image_1 = models.ImageField(upload_to='car_images/', null=True, blank=True)
+    image_2 = models.ImageField(upload_to='car_images/', null=True, blank=True)
+    image_3 = models.ImageField(upload_to='car_images/', null=True, blank=True)
+    image_4 = models.ImageField(upload_to='car_images/', null=True, blank=True)
+    image_5 = models.ImageField(upload_to='car_images/', null=True, blank=True)
+  
+    def __str__(self):
+        return f"{self.year} {self.make} {self.model}"

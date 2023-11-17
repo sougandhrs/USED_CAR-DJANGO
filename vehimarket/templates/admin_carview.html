@@ -1,0 +1,72 @@
+{% extends "admin_nav.html" %}
+{% load static %}
+{% block content %}
+<!-- Hoverable rows start -->
+<section class="section">
+    <div class="row" id="table-hover-row">
+        <div class="col-12">
+            <div class="card">
+                {% comment %} <div class="card-header">
+                    <h4 class="card-title">Hoverable rows</h4>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+                        <p>Add <code class="highlighter-rouge">.table-hover</code> to enable a hover
+                            state on table
+                            rows
+                            within a
+                            <code class="highlighter-rouge">&lt;tbody&gt;</code>.
+                        </p>
+                    </div> {% endcomment %}
+                    <!-- table hover -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" >
+                            <thead>
+                                <tr>
+                                    <th>MAKE</th>
+                                    <th>MODEL</th>
+                                    <th>YEAR</th>
+                                    <th>PRICE</th>
+                                    {% comment %} <th>DESCRIPTION</th> {% endcomment %}
+                                    <th>STATUS</th>
+                                    <th>DATE</th>
+                                    <th>ENGINE</th>
+                                    <th>TRANSMISSION</th>
+                                    {% comment %} <th>EXTERIOR COLOR</th>
+                                    <th>INTERIOR COLOR</th> {% endcomment %}
+                                    <th>FUEL TYPE</th>
+                                    {% comment %} <th>KILOMETER DRIVEN</th> {% endcomment %}
+                                    <th>OWNER</th>
+                                    <th>CAR IMAGE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for car in car_listings %}
+                                <tr>
+                                    <td class="text-bold-500">{{ car.make }}</td>
+                                    <td class="text-bold-500">{{ car.model }}</td>
+                                    <td class="text-bold-500">{{ car.year }}</td>
+                                    <td class="text-bold-500">{{ car.price }}</td>
+                                    {% comment %} <td class="text-bold-500">{{ car.description }}</td> {% endcomment %}
+                                    <td class="text-bold-500">{{ car.status }}</td>
+                                    <td class="text-bold-500">{{ car.date_added }}</td>
+                                    <td class="text-bold-500">{{ car.engine_type }}</td>
+                                    <td class="text-bold-500">{{ car.transmission_type }}</td>
+                                    {% comment %} <td class="text-bold-500">{{ car.exterior_color }}</td>
+                                    <td class="text-bold-500">{{ car.interior_color }}</td> {% endcomment %}
+                                    <td class="text-bold-500">{{ car.fuel_type }}</td>
+                                    {% comment %} <td class="text-bold-500">{{ car.kilometer_driven }}</td> {% endcomment %}
+                                    <td class="text-bold-500">{{ car.owner }}</td>
+                                    <td class="text-bold-500"><img src="{{ car.image_1.url }}" alt="Profile Image" style="max-width: 100px; max-height: 100px;" ></td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

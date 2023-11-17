@@ -1,0 +1,446 @@
+{% extends "nav.html" %}
+
+{% block content %}
+
+<style>
+    .profile-heading {
+        text-align: center;
+        font-size: 36px;
+        font-weight: bold;
+        color: #3e6274;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-family: 'Times New Roman', Times, serif; /* Add font-family property for Times New Roman */
+      }
+</style>
+
+<div class="container mt-5">
+    <h1 class="profile-heading">Sell Your Car</h1>
+    <center>
+    <form method="post" id="login-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="make" class="form-label">Make</label>
+            <input type="text" class="form-control" id="make" name="make" required style="width: 50%;">
+            <div class="text-danger" id="make_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="model" class="form-label">Model</label>
+            <input type="text" class="form-control" id="model" name="model" required style="width: 50%;">
+            <div class="text-danger" id="model_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="year" class="form-label">Year</label>
+            <input type="number" class="form-control" id="year" name="year" required style="width: 50%;">
+            <div class="text-danger" id="year_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" class="form-control" id="price" name="price" required style="width: 50%;">
+            <div class="text-danger" id="price_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required style="width: 50%;"></textarea>
+            <div class="text-danger" id="description_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="image_1" class="form-label">Upload Images</label>
+            <input type="file" class="form-control" id="image_1" name="image_1" accept="image/*" style="width: 50%;">
+            <div class="text-danger" id="image_1_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="image_2" class="form-label">Image 2</label>
+            <input type="file" class="form-control" id="image_2" name="image_2" accept="image/*" style="width: 50%;">
+            <div class="text-danger" id="image_2_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="image_3" class="form-label">Image 3</label>
+            <input type="file" class="form-control" id="image_3" name="image_3" accept="image/*" style="width: 50%;">
+            <div class="text-danger" id="image_3_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="image_4" class="form-label">Image 4</label>
+            <input type="file" class="form-control" id="image_4" name="image_4" accept="image/*" style="width: 50%;">
+            <div class="text-danger" id="image_4_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="image_5" class="form-label">Image 5</label>
+            <input type="file" class="form-control" id="image_5" name="image_5" accept="image/*" style="width: 50%;">
+            <div class="text-danger" id="image_5_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="engine_type" class="form-label">Engine Type</label>
+            <input type="text" class="form-control" id="engine_type" name="engine_type" style="width: 50%;">
+            <div class="text-danger" id="engine_type_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="transmission_type" class="form-label">Transmission Type</label>
+            <input type="text" class="form-control" id="transmission_type" name="transmission_type" style="width: 50%;">
+            <div class="text-danger" id="transmission_type_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="exterior_color" class="form-label">Exterior Color</label>
+            <input type="text" class="form-control" id="exterior_color" name="exterior_color" style="width: 50%;">
+            <div class="text-danger" id="exterior_color_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="interior_color" class="form-label">Interior Color</label>
+            <input type="text" class="form-control" id="interior_color" name="interior_color" style="width: 50%;">
+            <div class="text-danger" id="interior_color_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="fuel_type" class="form-label">Fuel Type</label>
+            <select class="form-control" id="fuel_type" name="fuel_type" style="width: 50%;">
+                <option value="petrol">Petrol</option>
+                <option value="diesel">Diesel</option>
+                <option value="electric">Electric</option>
+                <option value="hybrid">Hybrid</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="km" class="form-label">Kilometer_Driven</label>
+            <input type="number" class="form-control" id="km" name="km" required style="width: 50%;">
+            <div class="text-danger" id="km_error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="owner" class="form-label">Owner</label>
+            <select class="form-control" id="owner" name="owner" style="width: 50%;">
+                <option value="first">First</option>
+                <option value="second">Second</option>
+                <option value="third">Third</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </center>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all relevant form fields and error message elements
+        var make = document.getElementById("make");
+        var model = document.getElementById("model");
+        var year = document.getElementById("year");
+        var price = document.getElementById("price");
+        var description = document.getElementById("description");
+        var engineType = document.getElementById("engine_type");
+        var transmissionType = document.getElementById("transmission_type");
+        var exteriorColor = document.getElementById("exterior_color");
+        var interiorColor = document.getElementById("interior_color");
+        var km = document.getElementById("km");
+        var image1 = document.getElementById("image_1");
+        var image2 = document.getElementById("image_2");
+        var image3 = document.getElementById("image_3");
+        var image4 = document.getElementById("image_4");
+        var image5 = document.getElementById("image_5");
+
+        var makeError = document.getElementById("make_error");
+        var modelError = document.getElementById("model_error");
+        var yearError = document.getElementById("year_error");
+        var priceError = document.getElementById("price_error");
+        var descriptionError = document.getElementById("description_error");
+        var engineTypeError = document.getElementById("engine_type_error");
+        var transmissionTypeError = document.getElementById("transmission_type_error");
+        var exteriorColorError = document.getElementById("exterior_color_error");
+        var interiorColorError = document.getElementById("interior_color_error");
+        var kmError = document.getElementById("km_error");
+        var image1Error = document.getElementById("image_1_error");
+        var image2Error = document.getElementById("image_2_error");
+        var image3Error = document.getElementById("image_3_error");
+        var image4Error = document.getElementById("image_4_error");
+        var image5Error = document.getElementById("image_5_error");
+        
+
+        // Function to display error messages
+        function displayErrorMessage(fieldElement, errorElement, message) {
+            fieldElement.classList.add("is-invalid");
+            errorElement.textContent = message;
+        }
+
+        // Function to clear error messages
+        function clearErrorMessage(fieldElement, errorElement) {
+            fieldElement.classList.remove("is-invalid");
+            errorElement.textContent = "";
+        }
+
+        
+
+        make.addEventListener("input", function () {
+            clearErrorMessage(make, makeError);
+            const makeValue = make.value.trim();
+            
+            if (makeValue === "") {
+                displayErrorMessage(make, makeError, "Make cannot be empty.");
+            } else if (make.value.includes(" ")) {
+                displayErrorMessage(make, makeError, "Make cannot contain spaces.");
+            } else if (/\d/.test(makeValue)) {
+                displayErrorMessage(make, makeError, "Make cannot contain numbers.");
+            } else if (!/^[A-Za-z]+$/.test(makeValue)) {
+                displayErrorMessage(make, makeError, "Make must contain only alphabetic characters.");
+            }
+        });
+
+        
+        model.addEventListener("input", function () {
+            clearErrorMessage(model, modelError);
+            const modelValue = model.value.trim();
+            
+            if (modelValue === "") {
+                displayErrorMessage(model, modelError, "Model cannot be empty.");
+            } else if (model.value.includes(" ")) {
+                displayErrorMessage(model, modelError, "Model cannot contain spaces.");
+            } else if (/\d/.test(modelValue)) {
+                displayErrorMessage(model, modelError, "Model cannot contain numbers.");
+            } else if (!/^[A-Za-z]+$/.test(modelValue)) {
+                displayErrorMessage(model, modelError, "Model must contain only alphabetic characters.");
+            }
+        });
+
+        year.addEventListener("input", function () {
+            clearErrorMessage(year, yearError);
+            const yearValue = year.value.trim(); // Remove leading and trailing spaces
+        
+            if (yearValue === "") {
+                displayErrorMessage(year, yearError, "Year cannot be empty.");
+            } else if (/[^0-9]/.test(yearValue) || /\s/.test(yearValue)) {
+                displayErrorMessage(year, yearError, "Please enter a valid year (between 2010 and 2023).");
+            } else {
+                const selectedYear = parseInt(yearValue, 10);
+                if (selectedYear < 2010 || selectedYear > 2023) {
+                    displayErrorMessage(year, yearError, "Year must be between 2010 and 2023.");
+                }
+            }
+        });
+        
+
+        price.addEventListener("input", function () {
+            clearErrorMessage(price, priceError);
+            const priceValue = price.value.trim();
+        
+            if (priceValue === "") {
+                displayErrorMessage(price, priceError, "Price cannot be empty.");
+            } else if (/\s/.test(priceValue) || /[^0-9]/.test(priceValue)) {
+                displayErrorMessage(price, priceError, "Price must be a positive number (no spaces, alphabets, or special characters).");
+            } else {
+                const numericValue = parseFloat(priceValue);
+                if (isNaN(numericValue) || numericValue <= 0) {
+                    displayErrorMessage(price, priceError, "Price must be a positive number.");
+                } else if (numericValue > 10000000) {
+                    displayErrorMessage(price, priceError, "Price must not be greater than 10,000,000.");
+                }
+            }
+        });
+            
+
+        description.addEventListener("input", function () {
+            clearErrorMessage(description, descriptionError);
+            const descriptionValue = description.value.trim();
+        
+            if (descriptionValue === "") {
+                displayErrorMessage(description, descriptionError, "Description cannot be empty.");
+            } else if (/[0-9]/.test(descriptionValue)) {
+                displayErrorMessage(description, descriptionError, "Description must not contain numbers.");
+            } else if (/[!@#$%^&*()_+{}\[\]:;<>,.?~\\]/.test(descriptionValue)) {
+                displayErrorMessage(description, descriptionError, "Special characters are not allowed in the description.");
+            }
+        });
+        
+        engineType.addEventListener("input", function () {
+            clearErrorMessage(engineType, engineTypeError);
+            const engineTypeValue = engineType.value.trim();
+        
+            if (engineType.value.includes(" ")) {
+                displayErrorMessage(engineType, engineTypeError, "Engine type cannot start with spaces.");
+            } else if (/[!@#$%^&*()_+{}\[\]:;<>,.?~\\]/.test(engineTypeValue)) {
+                displayErrorMessage(engineType, engineTypeError, "Special characters are not allowed in the engine type.");
+            }
+        });
+        
+        transmissionType.addEventListener("input", function () {
+            clearErrorMessage(transmissionType, transmissionTypeError);
+            const transmissionTypeValue = transmissionType.value.trim().toLowerCase();
+        
+            if (transmissionTypeValue !== "automatic" && transmissionTypeValue !== "manual") {
+                displayErrorMessage(transmissionType, transmissionTypeError, "Please enter 'Automatic' or 'Manual'.");
+            } else if (transmissionType.value.includes(" ")) {
+                displayErrorMessage(transmissionType, transmissionTypeError, "No spaces are allowed.");
+            }
+        });
+        
+        exteriorColor.addEventListener("input", function () {
+            clearErrorMessage(exteriorColor, exteriorColorError);
+            const exteriorColorValue = exteriorColor.value.trim();
+        
+            if (!/^[A-Za-z]+$/.test(exteriorColorValue)) {
+                displayErrorMessage(exteriorColor, exteriorColorError, "Please enter a valid color (letters only).");
+            } else if (exteriorColor.value.includes(" ")) {
+                displayErrorMessage(exteriorColor, exteriorColorError, "No spaces are allowed.");
+            } else if (/[^A-Za-z]/.test(exteriorColorValue)) {
+                displayErrorMessage(exteriorColor, exteriorColorError, "No special characters or numbers are allowed.");
+            }
+        });
+        
+        interiorColor.addEventListener("input", function () {
+            clearErrorMessage(interiorColor, interiorColorError);
+            const interiorColorValue = interiorColor.value.trim();
+        
+            if (!/^[A-Za-z]+$/.test(interiorColorValue)) {
+                displayErrorMessage(interiorColor, interiorColorError, "Please enter a valid color (letters only).");
+            } else if (interiorColor.value.includes(" ")) {
+                displayErrorMessage(interiorColor, interiorColorError, "Interior color must not start with a space.");
+            } else if (/[^A-Za-z]/.test(interiorColorValue)) {
+                displayErrorMessage(interiorColor, interiorColorError, "No special characters or numbers are allowed.");
+            }
+        });
+        
+        km.addEventListener("input", function () {
+            clearErrorMessage(km, kmError);
+            const kmValue = parseInt(km.value, 10);
+        
+            if (km.value.trim() === "") {
+                displayErrorMessage(km, kmError, "Kilometer driven cannot be empty.");
+            } else if (/[^0-9]/.test(km.value)) {
+                displayErrorMessage(km, kmError, "Only numbers are allowed.");
+            } else if (isNaN(kmValue) || kmValue < 0 || kmValue > 700000) {
+                displayErrorMessage(km, kmError, "Kilometer driven must be a number between 0 and 700,000.");
+            }
+        });
+
+        image1.addEventListener("input", function () {
+            clearErrorMessage(image1, image1Error);
+            if (image1.files.length === 0) {
+                displayErrorMessage(image1, image1Error, "Please select an image.");
+            } else {
+                const allowedExtensions = ['jpg', 'jpeg', 'png'];
+                const file = image1.files[0];
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+        
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    displayErrorMessage(image1, image1Error, "Only .jpg and .png files are allowed.");
+                    // Clear the file input
+                    image1.value = "";
+                } else {
+                    clearErrorMessage(image1, image1Error);
+                }
+            }
+        });
+        
+        image2.addEventListener("input", function () {
+            clearErrorMessage(image2, image2Error);
+            if (image2.files.length === 0) {
+                displayErrorMessage(image2, image2Error, "Please select an image.");
+            } else {
+                const allowedExtensions = ['jpg', 'jpeg', 'png'];
+                const file = image2.files[0];
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+        
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    displayErrorMessage(image2, image2Error, "Only .jpg and .png files are allowed.");
+                    // Clear the file input
+                    image2.value = "";
+                } else {
+                    clearErrorMessage(image2, image2Error);
+                }
+            }
+        });
+        
+        image3.addEventListener("input", function () {
+            clearErrorMessage(image3, image3Error);
+            if (image3.files.length === 0) {
+                displayErrorMessage(image3, image3Error, "Please select an image.");
+            } else {
+                const allowedExtensions = ['jpg', 'jpeg', 'png'];
+                const file = image3.files[0];
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+        
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    displayErrorMessage(image3, image3Error, "Only .jpg and .png files are allowed.");
+                    // Clear the file input
+                    image3.value = "";
+                } else {
+                    clearErrorMessage(image3, image3Error);
+                }
+            }
+        });
+        
+        image4.addEventListener("input", function () {
+            clearErrorMessage(image4, image4Error);
+            if (image4.files.length === 0) {
+                displayErrorMessage(image4, image4Error, "Please select an image.");
+            } else {
+                const allowedExtensions = ['jpg', 'jpeg', 'png'];
+                const file = image4.files[0];
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+        
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    displayErrorMessage(image4, image4Error, "Only .jpg and .png files are allowed.");
+                    // Clear the file input
+                    image4.value = "";
+                } else {
+                    clearErrorMessage(image4, image4Error);
+                }
+            }
+        });
+        
+        
+        image5.addEventListener("input", function () {
+            clearErrorMessage(image5, image5Error);
+            if (image5.files.length === 0) {
+                displayErrorMessage(image5, image5Error, "Please select an image.");
+            } else {
+                const allowedExtensions = ['jpg', 'jpeg', 'png'];
+                const file = image5.files[0];
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+        
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    displayErrorMessage(image5, image5Error, "Only .jpg and .png files are allowed.");
+                    // Clear the file input
+                    image5.value = "";
+                } else {
+                    clearErrorMessage(image5, image5Error);
+                }
+            }
+        });
+        
+        var form = document.getElementById("login-form");
+
+        // Add a submit event listener to the form
+        form.addEventListener("submit", function (event) {
+            // Perform your final validation checks here for all fields
+
+            if (
+                !makeError.textContent &&
+                !modelError.textContent &&
+                !yearError.textContent &&
+                !priceError.textContent &&
+                !descriptionError.textContent &&
+                !engineTypeError.textContent &&
+                !transmissionTypeError.textContent &&
+                !exteriorColorError.textContent &&
+                !interiorColorError.textContent &&
+                !kmError.textContent &&
+                !image1Error.textContent &&
+                !image2Error.textContent &&
+                !image3Error.textContent &&
+                !image4Error.textContent &&
+                !image5Error.textContent
+            ) {
+                // All fields are valid, allow form submission
+                return true;
+            } else {
+                // Prevent form submission if there are validation errors
+                event.preventDefault();
+                return false;
+            }
+        });
+        
+    });
+</script>
+{% endblock %}

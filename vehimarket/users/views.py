@@ -8,11 +8,15 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from .models import users
 from datetime import datetime
-
+from .models import CarListing
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
 # Create your views here.
 def index(request):
     print(request.user)
     return render(request,'index.html')
+
+
 
 def login_view(request):
     if request.method=='POST':
@@ -36,31 +40,45 @@ def login_view(request):
     response['Cache-Control']='no-store,must-revalidate'
     return response
 
+
+
+@csrf_exempt
 def register(request):
-    message=""
-    if request.method=='POST':
-        email=request.POST['txt1']
-        fname=request.POST['txt2']
-        lname=request.POST['txt3']
-        dob=request.POST['txt4']
-        contact=request.POST['txt5']
-        house=request.POST['txt6']
-        place=request.POST['txt7']
-        pin=request.POST['txt8']
-        profile=request.FILES.get('txt9', False)
-        # rdate=request.POST['txt10']
-        password=request.POST['txt11']
-        # cpassword=request.POST['txt12']
-        myuser=User.objects.create_user(username=email,email=email,password=password)
-        myuser.save()
+    if request.method == 'POST':
+        email = request.POST['txt1']
+        password = request.POST['txt11']
 
-        data=users(user=myuser,u_fname=fname,u_lname=lname,u_dob=dob,u_contact=contact,u_house=house,u_place=place,u_pin=pin,u_profile=profile)
-        data.save()
-        message='Data Inserted Successfully'
-    return render(request,'registration.html',{'msg':message})
+        # Check if a user with the given email already exists
+        if User.objects.filter(username=email).exists():
+            message = 'Email already registered.'
+            messages.error(request, message)
+        else:
+            myuser = User.objects.create_user(username=email, email=email, password=password)
+            myuser.save()
 
+            fname = request.POST['txt2']
+            lname = request.POST['txt3']
+            dob = request.POST['txt4']
+            contact = request.POST['txt5']
+            house = request.POST['txt6']
+            place = request.POST['txt7']
+            pin = request.POST['txt8']
+            profile = request.FILES.get('txt9', False)
+
+            data = users(user=myuser, u_fname=fname, u_lname=lname, u_dob=dob, u_contact=contact, u_house=house, u_place=place, u_pin=pin, u_profile=profile)
+            data.save()
+
+            message = 'Data Inserted Successfully'
+            messages.success(request, message)
+
+    return render(request, 'registration.html')
+
+
+@login_required(login_url='login') 
 def nav(request):
     return render(request,'nav.html')
+
+
 
 @csrf_exempt
 def checkemailavailable(request):
@@ -75,6 +93,8 @@ def checkemailavailable(request):
             'is_available':True
         })
     
+
+@login_required(login_url='login')  
 def home(request):
     if 'userid' in request.session:
         u_id=request.session['userid']
@@ -86,11 +106,14 @@ def home(request):
         return redirect('login')
     # return render(request,'Home.html',{'user':usr})
     
+
+@login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return redirect('index')
 
 
+@login_required(login_url='login') 
 def update_profile(request):
     user_profile = users.objects.get(user=request.user)
 
@@ -125,7 +148,140 @@ def update_profile(request):
     })
 
 
+@login_required(login_url='login')
 def view_profile(request):
     # Get the user profile based on the username
     user_profile = users.objects.get(user=request.user)
     return render(request, 'view_profile.html',{'user': user_profile,} )
+
+
+@login_required(login_url='admin_login')
+def admin_home(request):
+    if 'userid1' in request.session:
+        u_id=request.session['userid1']
+        usr=User.objects.get(id=u_id)
+        response= render(request, 'admin_home.html',{'user1':usr})
+        response['Cache-Control']='no-store,must-revalidate'
+        return response
+    else:
+        return redirect('admin_login')
+    
+
+@login_required(login_url='admin_login')
+def admin_userview(request):
+    users_data = User.objects.filter(is_superuser=False)
+    
+    # Get additional user details from the 'users' model
+    user_details = users.objects.filter(user__in=users_data)
+
+    # Combine the 'User' and 'users' data into a single list
+    user_list = []
+    for user in users_data:
+        user_detail = user_details.filter(user=user).first()
+        user_list.append((user, user_detail))
+    return render(request,'admin_userview.html', {'user_list': user_list})
+
+
+@login_required(login_url='login') 
+def sellcar(request):
+    if request.method == 'POST':
+        make = request.POST['make']
+        model = request.POST['model']
+        year = request.POST['year']
+        price = request.POST['price']
+        description = request.POST['description']
+        image_1 = request.FILES['image_1']
+        image_2 = request.FILES['image_2']
+        image_3 = request.FILES['image_3']
+        image_4 = request.FILES['image_4']
+        image_5 = request.FILES['image_5']
+        engine_type = request.POST['engine_type']
+        transmission_type = request.POST['transmission_type']
+        exterior_color = request.POST['exterior_color']
+        interior_color = request.POST['interior_color']
+        fuel_type = request.POST['fuel_type']
+        kilometer_driven = request.POST['km']
+        owner=request.POST['owner']
+
+        
+        # Create a new car listing
+        car_listing = CarListing(
+            seller=request.user.users,  # Assuming request.user is authenticated and has a related users instance
+            make=make,
+            model=model,
+            year=year,
+            price=price,
+            description=description,
+            image_1=image_1,
+            image_2=image_2,
+            image_3=image_3,
+            image_4=image_4,
+            image_5=image_5,
+            engine_type=engine_type,
+            transmission_type=transmission_type,
+            exterior_color=exterior_color,
+            interior_color=interior_color,
+            fuel_type=fuel_type,
+            kilometer_driven = kilometer_driven,
+            owner=owner,
+        )
+        car_listing.save()
+        return redirect('home')
+    return render(request,'sellcar.html')
+
+
+@login_required(login_url='admin_login') 
+def admin_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('txt1')
+        password = request.POST.get('txt2')
+
+        # Authenticate the user
+        user1 = authenticate(request, username=email, password=password)
+
+        if user1 is not None:
+            if user1.is_superuser:
+                # User is a superuser
+                auth_login(request, user1)
+                request.session['userid1']=user1.id
+                return redirect('admin_home')  # Redirect to the admin home page
+            else:
+                messages.error(request, 'Invalid username or password for a superuser.')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    response= render(request, 'admin_login.html')
+    response['Cache-Control']='no-store,must-revalidate'
+    return response
+
+
+@login_required(login_url='admin_login')
+def admin_logout_view(request):
+    logout(request)
+    return redirect('index')
+
+
+@login_required(login_url='login')
+def viewcar(request):
+    available_cars = CarListing.objects.filter(status='available').exclude(seller__user=request.user)
+
+    return render(request, 'viewcar.html', {'available_cars': available_cars})
+
+@login_required(login_url='admin_login') 
+def admin_carview(request):
+    car_listings = CarListing.objects.all()
+    return render(request,'admin_carview.html', {'car_listings': car_listings})
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import CarListing
+
+@login_required(login_url='login') 
+def cardetail(request, car_id):
+    car = get_object_or_404(CarListing, pk=car_id)
+    return render(request, 'cardetail.html', {'car': car})
+
+@login_required(login_url='login') 
+def car_booking(request, car_id):
+    carbook= get_object_or_404(CarListing, pk=car_id)
+    return render(request,'car_booking.html',{'car': carbook})
