@@ -135,6 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE="django.contrib.sessions.backends.db"
 SESSION_COOKIE_NAME="sessionid"
 LOGIN_URL='login'
+LOGIN_URL='admin_login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
