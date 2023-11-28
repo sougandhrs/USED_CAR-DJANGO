@@ -81,6 +81,13 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item  ">
+                            <a href="/admin_assign_timeslots" class='sidebar-link'>
+                                <i class="fas fa-car"></i>
+                                <span>TestDrive Timeslots</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-person-badge-fill"></i>
@@ -137,7 +144,7 @@
             </header>
 
             <div class="page-heading">
-                <h3>User Details</h3>
+                <h3></h3>
             </div>
 
             <div class="page-content">
@@ -146,7 +153,7 @@
                 {% endblock %}
             </div>
 
-            <footer>
+            {% comment %} <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
                         <p>2021 &copy; Mazer</p>
@@ -156,7 +163,7 @@
                                 href="http://ahmadsaugi.com">A. Saugi</a></p>
                     </div>
                 </div>
-            </footer>
+            </footer> {% endcomment %}
         </div>
     </div>
     <script src="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>

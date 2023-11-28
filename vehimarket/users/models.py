@@ -57,3 +57,12 @@ class CarListing(models.Model):
   
     def __str__(self):
         return f"{self.year} {self.make} {self.model}"
+    
+
+class TestDrive(models.Model):
+    date = models.DateField()
+    time_slot = models.CharField(max_length=20)
+    is_booked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.date} {self.time_slot}"

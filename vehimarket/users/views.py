@@ -11,6 +11,7 @@ from datetime import datetime
 from .models import CarListing
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+
 # Create your views here.
 def index(request):
     print(request.user)
@@ -230,7 +231,7 @@ def sellcar(request):
     return render(request,'sellcar.html')
 
 
-@login_required(login_url='admin_login') 
+
 def admin_login(request):
     if request.method == 'POST':
         email = request.POST.get('txt1')
@@ -285,3 +286,20 @@ def cardetail(request, car_id):
 def car_booking(request, car_id):
     carbook= get_object_or_404(CarListing, pk=car_id)
     return render(request,'car_booking.html',{'car': carbook})
+
+
+@login_required(login_url='admin_login') 
+def admin_assign_timeslots(request):
+    if request.method == 'POST':
+        date = request.POST['date']
+        time_slots = request.POST.getlist('time_slots')
+
+        # Validate if the timeslots are available
+        for time_slot in time_slots:
+            # Create a new TestDrive instance for each timeslot
+            test_drive = TestDrive(date=date, time_slot=time_slot, is_booked=False)
+            test_drive.save()
+
+        messages.success(request, 'Timeslots assigned successfully!')
+        return redirect('admin_home')
+    return render(request,'admin_assign_timeslots.html')
