@@ -146,3 +146,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sougandhrs2001@gmail.com'
 EMAIL_HOST_PASSWORD = 'gesl qzgo hurt idlj'
 DEFAULT_FROM_EMAIL = 'sougandhrs2001@gmail.com'
+
+
+RAZORPAY_API_KEY= 'rzp_test_o23i8IDjUAc8c6'
+RAZORPAY_API_SECRET = 'NuHIefpYURwZ6zEpELMYUnBL'

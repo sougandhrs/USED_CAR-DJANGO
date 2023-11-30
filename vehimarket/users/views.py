@@ -11,6 +11,10 @@ from datetime import datetime
 from .models import CarListing
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+import razorpay
+from django.conf import settings
+from django.http import HttpResponseBadRequest
+from razorpay import Client
 
 # Create your views here.
 def index(request):
@@ -303,3 +307,35 @@ def admin_assign_timeslots(request):
         messages.success(request, 'Timeslots assigned successfully!')
         return redirect('admin_home')
     return render(request,'admin_assign_timeslots.html')
+
+
+razorpay_api_key = settings.RAZORPAY_API_KEY
+razorpay_secret_key = settings.RAZORPAY_API_SECRET
+
+razorpay_client = Client(auth=(razorpay_api_key, razorpay_secret_key))
+
+@csrf_exempt
+def payment(request,car_id):
+    carbook= get_object_or_404(CarListing, pk=car_id)
+    # Amount to be paid (in paisa), you can change this dynamically based on your logic
+    amount = 200000
+
+    # Create a Razorpay order (you need to implement this based on your logic)
+    order_data = {
+        'amount': amount,
+        'currency': 'INR',
+        'receipt': 'order_rcptid_11',
+        'payment_capture': '1',  # Auto-capture payment
+    }
+
+    # Create an order
+    order = razorpay_client.order.create(data=order_data)
+
+    context = {
+        'razorpay_api_key': razorpay_api_key,
+        'amount': order_data['amount'],
+        'currency': order_data['currency'],
+        'order_id': order['id'],
+    }
+
+    return render(request, 'payment.html', context)
