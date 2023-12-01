@@ -318,7 +318,7 @@ razorpay_client = Client(auth=(razorpay_api_key, razorpay_secret_key))
 def payment(request,car_id):
     carbook= get_object_or_404(CarListing, pk=car_id)
     # Amount to be paid (in paisa), you can change this dynamically based on your logic
-    amount = 200000
+    amount = 2000000
 
     # Create a Razorpay order (you need to implement this based on your logic)
     order_data = {
