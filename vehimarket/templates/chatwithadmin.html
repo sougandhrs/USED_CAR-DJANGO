@@ -1,0 +1,62 @@
+{% extends "nav.html" %}
+
+{% block style %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+    }
+
+    h3 {
+        color: #007BFF;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+            text-transform: uppercase;
+    }
+
+    form {
+        max-width: 400px;
+        margin: 1px auto 0; /* Adjust the top margin value here */
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    button[type="submit"] {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock style %}
+{% block content %}
+<center><br><br><br><br><br>
+    <h3>Chat With Admin</h3></center>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="feedback_message" rows="5" cols="50" placeholder="Enter your Message here" required></textarea>
+        <br>
+        <button type="submit">Send </button><br><br>
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </form><br><br><br><br><br><br><br><br>
+{% endblock %}

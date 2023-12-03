@@ -66,3 +66,9 @@ class TestDrive(models.Model):
 
     def __str__(self):
         return f"{self.date} {self.time_slot}"
+    
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Assuming you have a User model
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)

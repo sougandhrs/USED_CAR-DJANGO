@@ -309,6 +309,24 @@ def admin_assign_timeslots(request):
     return render(request,'admin_assign_timeslots.html')
 
 
+def chatwithadmin(request):
+    if request.method == "POST":
+        feedback_message = request.POST.get('feedback_message')
+        if feedback_message:
+            Feedback.objects.create(user=request.user, message=feedback_message)
+            messagenew = 'Message Sent Successfully'
+            messages.success(request, messagenew)
+            # You can add additional logic here (e.g., sending a confirmation email)
+            return redirect('chatwithadmin')
+
+    return render(request,'chatwithadmin.html')
+
+def admin_viewchat(request):
+    feedback_list = Feedback.objects.all()
+    return render(request, 'admin_viewchat.html',{'feedback_list':feedback_list})
+
+
+
 razorpay_api_key = settings.RAZORPAY_API_KEY
 razorpay_secret_key = settings.RAZORPAY_API_SECRET
 
@@ -339,3 +357,5 @@ def payment(request,car_id):
     }
 
     return render(request, 'payment.html', context)
+
+
