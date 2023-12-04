@@ -72,3 +72,11 @@ class Feedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Assuming you have a User model
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class CarBooking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    car_listing = models.ForeignKey(CarListing, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.car_listing} - Date: {self.date}"

@@ -22,8 +22,8 @@
                             <div class="cart wow bounceInUp animated">
     
             <div class="table-responsive shopping-cart-tbl  container">
-    <form action="{% url 'payment' car.id  %}" method="post">
-        
+    <form action="{% url 'car_booking' car.id %}" method="post">
+        {% csrf_token %}
         <input name="form_key" type="hidden" value="EPYwQxF6xoWcjLUr">
         <fieldset>
             <table id="shopping-cart-table" class="data-table cart-table table-striped">

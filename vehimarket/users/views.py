@@ -288,8 +288,28 @@ def cardetail(request, car_id):
 
 @login_required(login_url='login') 
 def car_booking(request, car_id):
-    carbook= get_object_or_404(CarListing, pk=car_id)
-    return render(request,'car_booking.html',{'car': carbook})
+    car = get_object_or_404(CarListing, pk=car_id)
+    user = request.user
+
+    if request.method == 'POST':
+        # Check if the user already has a booking for this car
+        existing_booking = CarBooking.objects.filter(user=user, car_listing=car).first()
+
+        if existing_booking:
+            # If a booking exists, redirect to payment directly
+            return redirect('payment', car_id=car_id, booking_id=existing_booking.id)
+        else:
+            # If no booking exists, create a new one
+            new_booking = CarBooking(user=user, car_listing=car)
+            # You can add other fields to the CarBooking model as needed
+            new_booking.save()
+
+            # Redirect to the payment page with car_id and booking_id
+            return redirect('payment', car_id=car_id, booking_id=new_booking.id)
+
+    return render(request, 'car_booking.html', {'car': car})
+    # carbook= get_object_or_404(CarListing, pk=car_id)
+    # return render(request,'car_booking.html',{'car': carbook})
 
 
 @login_required(login_url='admin_login') 
@@ -331,8 +351,9 @@ razorpay_secret_key = settings.RAZORPAY_API_SECRET
 razorpay_client = Client(auth=(razorpay_api_key, razorpay_secret_key))
 
 @csrf_exempt
-def payment(request,car_id):
+def payment(request,car_id,booking_id):
     carbook= get_object_or_404(CarListing, pk=car_id)
+    bookid = get_object_or_404(CarBooking, pk=booking_id)
     # Amount to be paid (in paisa), you can change this dynamically based on your logic
     amount = 2000000
 
