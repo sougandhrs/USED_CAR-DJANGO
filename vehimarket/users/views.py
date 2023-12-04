@@ -314,8 +314,6 @@ def chatwithadmin(request):
         feedback_message = request.POST.get('feedback_message')
         if feedback_message:
             Feedback.objects.create(user=request.user, message=feedback_message)
-            messagenew = 'Message Sent Successfully'
-            messages.success(request, messagenew)
             # You can add additional logic here (e.g., sending a confirmation email)
             return redirect('chatwithadmin')
 

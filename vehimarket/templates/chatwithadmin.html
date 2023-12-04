@@ -55,8 +55,8 @@
         <textarea name="feedback_message" rows="5" cols="50" placeholder="Enter your Message here" required></textarea>
         <br>
         <button type="submit">Send </button><br><br>
-        {% for message in messages %}
+        {% comment %} {% for message in messages %}
         <p>{{ message }}</p>
-        {% endfor %}
+        {% endfor %} {% endcomment %}
     </form><br><br><br><br><br><br><br><br>
 {% endblock %}
