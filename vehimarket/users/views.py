@@ -15,6 +15,9 @@ import razorpay
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from razorpay import Client
+from django.views.decorators.cache import never_cache
+from django.shortcuts import render, get_object_or_404
+from .models import CarListing
 
 # Create your views here.
 def index(request):
@@ -78,7 +81,7 @@ def register(request):
 
     return render(request, 'registration.html')
 
-
+@never_cache
 @login_required(login_url='login') 
 def nav(request):
     return render(request,'nav.html')
@@ -98,7 +101,7 @@ def checkemailavailable(request):
             'is_available':True
         })
     
-
+@never_cache
 @login_required(login_url='login')  
 def home(request):
     if 'userid' in request.session:
@@ -111,13 +114,13 @@ def home(request):
         return redirect('login')
     # return render(request,'Home.html',{'user':usr})
     
-
+@never_cache
 @login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return redirect('index')
 
-
+@never_cache
 @login_required(login_url='login') 
 def update_profile(request):
     user_profile = users.objects.get(user=request.user)
@@ -152,14 +155,14 @@ def update_profile(request):
         'dob_initial': dob_initial,
     })
 
-
+@never_cache
 @login_required(login_url='login')
 def view_profile(request):
     # Get the user profile based on the username
     user_profile = users.objects.get(user=request.user)
     return render(request, 'view_profile.html',{'user': user_profile,} )
 
-
+@never_cache
 @login_required(login_url='admin_login')
 def admin_home(request):
     if 'userid1' in request.session:
@@ -171,7 +174,7 @@ def admin_home(request):
     else:
         return redirect('admin_login')
     
-
+@never_cache
 @login_required(login_url='admin_login')
 def admin_userview(request):
     users_data = User.objects.filter(is_superuser=False)
@@ -186,7 +189,7 @@ def admin_userview(request):
         user_list.append((user, user_detail))
     return render(request,'admin_userview.html', {'user_list': user_list})
 
-
+@never_cache
 @login_required(login_url='login') 
 def sellcar(request):
     if request.method == 'POST':
@@ -264,7 +267,7 @@ def admin_logout_view(request):
     logout(request)
     return redirect('index')
 
-
+@never_cache
 @login_required(login_url='login')
 def viewcar(request):
     available_cars = CarListing.objects.filter(status='available').exclude(seller__user=request.user)
@@ -277,15 +280,14 @@ def admin_carview(request):
     return render(request,'admin_carview.html', {'car_listings': car_listings})
 
 
-
-from django.shortcuts import render, get_object_or_404
-from .models import CarListing
-
+@never_cache
 @login_required(login_url='login') 
 def cardetail(request, car_id):
     car = get_object_or_404(CarListing, pk=car_id)
     return render(request, 'cardetail.html', {'car': car})
 
+
+@never_cache
 @login_required(login_url='login') 
 def car_booking(request, car_id):
     car = get_object_or_404(CarListing, pk=car_id)
@@ -328,7 +330,8 @@ def admin_assign_timeslots(request):
         return redirect('admin_home')
     return render(request,'admin_assign_timeslots.html')
 
-
+@never_cache
+@login_required(login_url='login')
 def chatwithadmin(request):
     if request.method == "POST":
         feedback_message = request.POST.get('feedback_message')
@@ -338,6 +341,7 @@ def chatwithadmin(request):
             return redirect('chatwithadmin')
 
     return render(request,'chatwithadmin.html')
+
 
 def admin_viewchat(request):
     feedback_list = Feedback.objects.all()
@@ -350,6 +354,8 @@ razorpay_secret_key = settings.RAZORPAY_API_SECRET
 
 razorpay_client = Client(auth=(razorpay_api_key, razorpay_secret_key))
 
+@login_required(login_url='login')
+@never_cache
 @csrf_exempt
 def payment(request,car_id,booking_id):
     carbook= get_object_or_404(CarListing, pk=car_id)
