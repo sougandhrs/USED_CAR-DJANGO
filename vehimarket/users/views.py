@@ -373,6 +373,18 @@ def payment(request,car_id,booking_id):
 
     # Create an order
     order = razorpay_client.order.create(data=order_data)
+    payment = Payment.objects.create(
+        booking=bookid,
+        car=carbook,
+        user=request.user,  # Assuming the user is authenticated
+        is_paid=True,
+        amount=amount
+    )
+    payment.save()
+
+    # Update the CarListing status to 'sold'
+    carbook.status = 'sold'
+    carbook.save()
 
     context = {
         'razorpay_api_key': razorpay_api_key,

@@ -80,3 +80,14 @@ class CarBooking(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.car_listing} - Date: {self.date}"
+    
+class Payment(models.Model):
+    booking = models.ForeignKey('CarBooking', on_delete=models.CASCADE)
+    car = models.ForeignKey('CarListing', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_paid = models.BooleanField(default=False)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment for Booking ID {self.booking_id}"
