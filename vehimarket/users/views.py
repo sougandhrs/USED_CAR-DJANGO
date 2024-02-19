@@ -18,6 +18,7 @@ from razorpay import Client
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render, get_object_or_404
 from .models import CarListing
+from .models import Accessory
 
 # Create your views here.
 def index(request):
@@ -396,3 +397,51 @@ def payment(request,car_id,booking_id):
     return render(request, 'payment.html', context)
 
 
+def adminaccessoriesadd(request):
+    if request.method == 'POST':
+        accessory_name = request.POST.get('accessory_name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        brand = request.POST.get('brand')
+        category = request.POST.get('category')
+        quantity = request.POST.get('quantity')
+        warranty = request.POST.get('warranty')
+        image1 = request.FILES['images1']
+        image2 = request.FILES['images2']
+        image3 = request.FILES['images3']
+        image4 = request.FILES['images4']
+        
+        if not (accessory_name and description and price and brand and category and quantity and warranty):
+            # If any of the required fields are missing, render the form again with an error message
+            return render(request, 'admin_accessoriesadd.html', {'error': 'All fields are required'})
+        
+        try:
+            # Create an instance of Accessory model
+            accessory = Accessory.objects.create(
+                accessory_name=accessory_name,
+                description=description,
+                price=price,
+                brand=brand,
+                category=category,
+                quantity=quantity,
+                warranty=warranty
+            )
+
+            
+            accessoryimage = AccessoryImage.objects.create(accessory=accessory,image1=image1,image2=image2,image3=image3,image4=image4,)
+            # images = []
+            # for i in range(1, 5):  # Assuming you have four image input fields
+            #     image_file = request.FILES.get(f'images{i}')
+            #     if image_file:
+            #         # Create AccessoryImage instance and link it to the accessory
+            #         image_field_name = f'image{i}'
+            #         image_instance = AccessoryImage(accessory=accessory, **{image_field_name: image_file})
+            #         images.append(image_instance)
+            # AccessoryImage.objects.bulk_create(images)
+
+            # Redirect to a success page or anywhere you want
+            return redirect('adminaccessoriesadd')
+        except Exception as e:
+            # If an error occurs during object creation, render the form again with an error message
+            return render(request, 'admin_accessoriesadd.html', {'error': str(e)})
+    return render(request,'admin_accessoriesadd.html')

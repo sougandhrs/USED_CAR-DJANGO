@@ -30,4 +30,5 @@ urlpatterns = [
     path('payment/<int:car_id>/<int:booking_id>/', views.payment, name='payment'),
     path('chatwithadmin/',views.chatwithadmin,name='chatwithadmin'),
     path('admin_viewchat/',views.admin_viewchat,name='admin_viewchat'),
+    path('adminaccessoriesadd/',views.adminaccessoriesadd,name='adminaccessoriesadd'),
 ]
