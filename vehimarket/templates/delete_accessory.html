@@ -1,0 +1,72 @@
+{% extends "admin_nav.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+    }
+
+    .box {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    p {
+        margin-bottom: 20px;
+    }
+
+    .btn-group {
+        text-align: center;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 0 10px;
+        transition: background-color 0.3s;
+    }
+
+    .delete-btn {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .cancel-btn {
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+    }
+
+    .cancel-btn:hover {
+        background-color: #2980b9;
+    }
+</style>
+<div class="container">
+    <div class="box">
+        <h2>Delete Accessory</h2>
+        <p>Are you sure you want to delete the accessory "{{ accessory.accessory_name }}"?</p>
+        <form action="{% url 'delete_accessory' accessory.pk %}" method="post">
+            {% csrf_token %}
+            <div class="btn-group">
+                <button class="btn delete-btn" type="submit">Delete</button>
+                <a class="btn cancel-btn" href="{% url 'accessories_list' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

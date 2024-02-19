@@ -20,6 +20,8 @@ from django.shortcuts import render, get_object_or_404
 from .models import CarListing
 from .models import Accessory
 
+
+
 # Create your views here.
 def index(request):
     print(request.user)
@@ -445,3 +447,43 @@ def adminaccessoriesadd(request):
             # If an error occurs during object creation, render the form again with an error message
             return render(request, 'admin_accessoriesadd.html', {'error': str(e)})
     return render(request,'admin_accessoriesadd.html')
+
+
+
+def accessories_list(request):
+    accessories = Accessory.objects.all()
+    return render(request, 'accessories_list.html', {'accessories': accessories})
+
+
+def update_accessory(request, pk):
+    # Get the accessory object by its primary key
+    accessory = get_object_or_404(Accessory, pk=pk)
+
+    if request.method == 'POST':
+        # Update the accessory object with the new data
+        accessory.accessory_name = request.POST['accessory_name']
+        accessory.description = request.POST['description']
+        accessory.price = request.POST['price']
+        accessory.brand = request.POST['brand']
+        accessory.category = request.POST['category']
+        accessory.quantity = request.POST['quantity']
+        accessory.warranty = request.POST['warranty']
+        accessory.save()  # Save the updated accessory
+        return redirect('accessories_list')  # Redirect to the accessories listing page
+
+    # Render the update accessory form with the accessory object
+    return render(request, 'update_accessory.html', {'accessory': accessory})
+
+
+
+def delete_accessory(request, pk):
+    # Get the accessory object by its primary key
+    accessory = get_object_or_404(Accessory, pk=pk)
+
+    if request.method == 'POST':
+        # Delete the accessory object
+        accessory.delete()
+        return redirect('accessories_list')  # Redirect to the accessories listing page
+
+    # Render the delete confirmation page with the accessory object
+    return render(request, 'delete_accessory.html', {'accessory': accessory})

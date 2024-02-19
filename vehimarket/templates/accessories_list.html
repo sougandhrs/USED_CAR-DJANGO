@@ -1,0 +1,83 @@
+{% extends "admin_nav.html" %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    h2 {
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<div class="container">
+    <h2>Accessories Information</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Accessory Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Warranty</th>
+                <th>Created At</th>
+                <th>Images</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Add your Django template logic to render accessories information here -->
+            {% for accessory in accessories %}
+            <tr>
+                <td>{{ accessory.accessory_name }}</td>
+                <td>{{ accessory.description }}</td>
+                <td>{{ accessory.price }}</td>
+                <td>{{ accessory.brand }}</td>
+                <td>{{ accessory.get_category_display }}</td>
+                <td>{{ accessory.quantity }}</td>
+                <td>{{ accessory.warranty }}</td>
+                <td>{{ accessory.created_at }}</td>
+                <td>
+                    {% for image in accessory.images.all %}
+                    <img src="{{ image.image1.url }}" alt="Accessory Image" style="width: 50px; height: 50px; margin-right: 5px;">
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{% url 'update_accessory' accessory.pk %}">Update</a>
+                </td>
+                <td>
+                    <a href="{% url 'delete_accessory' accessory.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
