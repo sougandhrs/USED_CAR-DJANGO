@@ -32,6 +32,7 @@ urlpatterns = [
     path('admin_viewchat/',views.admin_viewchat,name='admin_viewchat'),
     path('adminaccessoriesadd/',views.adminaccessoriesadd,name='adminaccessoriesadd'),
     path('accessories_list/', views.accessories_list, name='accessories_list'),
-    path('accessories/update/<int:pk>/', views.update_accessory, name='update_accessory'),
+    path('update_accessory/<int:accessory_id>/', views.update_accessory, name='update_accessory'),
     path('accessories/delete/<int:pk>/', views.delete_accessory, name='delete_accessory'),
+    path('accessory_view/',views.accessory_view, name='accessory_view'),
 ]

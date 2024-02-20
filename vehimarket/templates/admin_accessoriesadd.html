@@ -72,18 +72,22 @@
         <div class="form-group">
             <label for="accessory_name">Accessory Name:</label>
             <input type="text" id="accessory_name" name="accessory_name" required>
+            <p id="accessory_name_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
             <input type="text" id="description" name="description" required>
+            <p id="description_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="price">Price:</label>
             <input type="text" id="price" name="price" required>
+            <p id="price_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="brand">Brand:</label>
             <input type="text" id="brand" name="brand" required>
+            <p id="brand_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="category">Category:</label>
@@ -97,26 +101,32 @@
         <div class="form-group">
             <label for="quantity">Quantity:</label>
             <input type="number" id="quantity" name="quantity" required>
+            <p id="quantity_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="warranty">Warranty:</label>
             <input type="number" id="warranty" name="warranty" required>
+            <p id="warranty_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="images1">Images 1</label>
             <input type="file" id="images1" name="images1">
+            <p id="images1_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="images2">Images 2</label>
             <input type="file" id="images2" name="images2">
+            <p id="images2_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="images3">Images 3</label>
             <input type="file" id="images3" name="images3">
+            <p id="images3_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <label for="images4">Images 4</label>
             <input type="file" id="images4" name="images4">
+            <p id="images4_error" class="error-message"></p>
         </div>
         <div class="form-group">
             <input type="submit" value="Submit">
@@ -130,6 +140,240 @@
         <p>Accessory is added!</p>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var accessoryName = document.getElementById("accessory_name");
+        var description = document.getElementById("description");
+        var price = document.getElementById("price");
+        var brand = document.getElementById("brand");
+        var quantity = document.getElementById("quantity");
+        var warranty = document.getElementById("warranty");
+        var images1 = document.getElementById("images1");
+        var images2 = document.getElementById("images2");
+        var images3 = document.getElementById("images3");
+        var images4 = document.getElementById("images4");
+
+        var accessoryNameError = document.getElementById("accessory_name_error");
+        var descriptionError = document.getElementById("description_error");
+        var priceError = document.getElementById("price_error");
+        var brandError = document.getElementById("brand_error");
+        var quantityError = document.getElementById("quantity_error");
+        var warrantyError = document.getElementById("warranty_error");
+        var images1Error = document.getElementById("images1_error");
+        var images2Error = document.getElementById("images2_error");
+        var images3Error = document.getElementById("images3_error");
+        var images4Error = document.getElementById("images4_error");
+
+        // Function to display error messages
+        function displayErrorMessage(fieldElement, errorElement, message) {
+            fieldElement.classList.add("is-invalid");
+            errorElement.textContent = message;
+        }
+
+        // Function to clear error messages
+        function clearErrorMessage(fieldElement, errorElement) {
+            fieldElement.classList.remove("is-invalid");
+            errorElement.textContent = "";
+        }
+
+        // Event listeners for real-time validation
+        accessoryName.addEventListener("input", function () {
+            clearErrorMessage(accessoryName, accessoryNameError);
+            const accessoryNameValue = accessoryName.value.trim();
+        
+            // Check if accessory name is empty
+            if (accessoryNameValue === "") {
+                displayErrorMessage(accessoryName, accessoryNameError, "Accessory name cannot be empty.");
+            } 
+            // Check if accessory name contains special characters
+            else if (!/^[a-zA-Z0-9\s]*$/.test(accessoryNameValue)) {
+                displayErrorMessage(accessoryName, accessoryNameError, "Accessory name cannot contain special characters.");
+            } 
+            // Check if there is a space at the beginning
+            else if (accessoryName.value.startsWith(" ") || accessoryName.value.endsWith(" ")) {
+                displayErrorMessage(accessoryName, accessoryNameError, "Accessory name cannot start or end with a space.");
+            } 
+            // Check if accessory name is shorter than 2 characters
+            else if (accessoryNameValue.length <= 2) {
+                displayErrorMessage(accessoryName, accessoryNameError, "Accessory name must be longer than 2 characters.");
+            } 
+        });
+
+        description.addEventListener("input", function () {
+            clearErrorMessage(description, descriptionError);
+            const descriptionValue = description.value.trim();
+        
+            // Check if description is empty
+            if (descriptionValue === "") {
+                displayErrorMessage(description, descriptionError, "Description cannot be empty.");
+            } 
+            // Check if description contains special characters
+            else if (!/^[a-zA-Z\s]*$/.test(descriptionValue)) {
+                displayErrorMessage(description, descriptionError, "Description cannot contain special characters.");
+            } 
+            // Check if description contains numbers
+            else if (/\d/.test(descriptionValue)) {
+                displayErrorMessage(description, descriptionError, "Description cannot contain numbers.");
+            } 
+            // Check if description length is less than 5 characters
+            else if (descriptionValue.length < 5) {
+                displayErrorMessage(description, descriptionError, "Description must contain at least 5 characters.");
+            } 
+            // Check if description starts with a space
+            else if (description.value.startsWith(" ")) {
+                displayErrorMessage(description, descriptionError, "Description cannot start with a space.");
+            }
+        });
+        
+
+        price.addEventListener("input", function () {
+            clearErrorMessage(price, priceError);
+            const priceValue = parseFloat(price.value);
+            
+            // Check if price is not a number or less than or equal to 0
+            if (isNaN(priceValue) || priceValue <= 0) {
+                displayErrorMessage(price, priceError, "Please enter a valid price.");
+            } 
+            // Check if price is greater than 500000
+            else if (priceValue > 500000) {
+                displayErrorMessage(price, priceError, "Price must not exceed 500000.");
+            }
+        });
+
+        brand.addEventListener("input", function () {
+            clearErrorMessage(brand, brandError);
+            const brandValue = brand.value.trim();
+            
+            // Check if brand name is empty
+            if (brandValue === "") {
+                displayErrorMessage(brand, brandError, "Brand name cannot be empty.");
+            } 
+            // Check if brand name contains special characters
+            else if (!/^[a-zA-Z0-9]+$/.test(brandValue)) {
+                displayErrorMessage(brand, brandError, "Brand name cannot contain special characters.");
+            } 
+            // Check if brand name starts with a space
+            else if (brand.value.startsWith(" ")) {
+                displayErrorMessage(brand, brandError, "Brand name cannot start with a space.");
+            }
+        });
+
+        quantity.addEventListener("input", function () {
+            clearErrorMessage(quantity, quantityError);
+            const quantityValue = parseInt(quantity.value);
+            
+            // Check if quantity is not a valid number or is less than or equal to 0
+            if (isNaN(quantityValue) || quantityValue <= 0) {
+                displayErrorMessage(quantity, quantityError, "Please enter a valid quantity.");
+            } 
+            // Check if quantity is greater than 100
+            else if (quantityValue > 100) {
+                displayErrorMessage(quantity, quantityError, "Quantity cannot be greater than 100.");
+            }
+        });
+
+        warranty.addEventListener("input", function () {
+            clearErrorMessage(warranty, warrantyError);
+            const warrantyValue = parseInt(warranty.value);
+            
+            // Check if warranty is not a valid number or is less than 0
+            if (isNaN(warrantyValue) || warrantyValue < 0) {
+                displayErrorMessage(warranty, warrantyError, "Please enter a valid warranty period.");
+            } 
+            // Check if warranty is greater than 10
+            else if (warrantyValue > 10) {
+                displayErrorMessage(warranty, warrantyError, "Warranty cannot be greater than 10.");
+            }
+        });
+
+        images1.addEventListener("change", function () {
+            clearErrorMessage(images1, images1Error);
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileName = images1.value;
+            if (!fileName) {
+                displayErrorMessage(images1, images1Error, "Please select an image.");
+                return;
+            }
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                displayErrorMessage(images1, images1Error, "Only .jpg, .jpeg, and .png files are allowed.");
+                images1.value = "";
+            }
+        });
+
+        images2.addEventListener("change", function () {
+            clearErrorMessage(images2, images2Error);
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileName = images2.value;
+            if (!fileName) {
+                displayErrorMessage(images2, images2Error, "Please select an image.");
+                return;
+            }
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                displayErrorMessage(images2, images2Error, "Only .jpg, .jpeg, and .png files are allowed.");
+                images2.value = "";
+            }
+        });
+
+        images3.addEventListener("change", function () {
+            clearErrorMessage(images3, images3Error);
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileName = images3.value;
+            if (!fileName) {
+                displayErrorMessage(images3, images3Error, "Please select an image.");
+                return;
+            }
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                displayErrorMessage(images3, images3Error, "Only .jpg, .jpeg, and .png files are allowed.");
+                images3.value = "";
+            }
+        });
+
+        images4.addEventListener("change", function () {
+            clearErrorMessage(images4, images4Error);
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileName = images4.value;
+            if (!fileName) {
+                displayErrorMessage(images4, images4Error, "Please select an image.");
+                return;
+            }
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                displayErrorMessage(images4, images4Error, "Only .jpg, .jpeg, and .png files are allowed.");
+                images4.value = "";
+            }
+        });
+
+        // Similar event listeners for images2, images3, and images4
+
+        // Add event listener to the form for form submission
+        document.getElementById("accessoryForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Perform your final validation checks here
+            if (
+                !accessoryNameError.textContent &&
+                !descriptionError.textContent &&
+                !priceError.textContent &&
+                !brandError.textContent &&
+                !quantityError.textContent &&
+                !warrantyError.textContent &&
+                !images1Error.textContent &&
+                !images2Error.textContent &&
+                !images3Error.textContent &&
+                !images4Error.textContent
+            ) {
+                // All fields are valid, allow form submission
+                this.submit();
+            } else {
+                // Show an error message or take appropriate action
+                alert("Please correct the errors in the form.");
+            }
+        });
+    });
+</script>
 
 <script>
     // Get the modal

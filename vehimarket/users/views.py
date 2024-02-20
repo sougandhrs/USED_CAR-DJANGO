@@ -19,7 +19,7 @@ from django.views.decorators.cache import never_cache
 from django.shortcuts import render, get_object_or_404
 from .models import CarListing
 from .models import Accessory
-
+from .models import Accessory, AccessoryImage
 
 
 # Create your views here.
@@ -455,12 +455,11 @@ def accessories_list(request):
     return render(request, 'accessories_list.html', {'accessories': accessories})
 
 
-def update_accessory(request, pk):
+def update_accessory(request, accessory_id):
     # Get the accessory object by its primary key
-    accessory = get_object_or_404(Accessory, pk=pk)
-
+    accessory = get_object_or_404(Accessory, pk=accessory_id)
+    accessory_images = AccessoryImage.objects.filter(accessory=accessory)
     if request.method == 'POST':
-        # Update the accessory object with the new data
         accessory.accessory_name = request.POST['accessory_name']
         accessory.description = request.POST['description']
         accessory.price = request.POST['price']
@@ -468,10 +467,23 @@ def update_accessory(request, pk):
         accessory.category = request.POST['category']
         accessory.quantity = request.POST['quantity']
         accessory.warranty = request.POST['warranty']
-        accessory.save()  # Save the updated accessory
-        return redirect('accessories_list')  # Redirect to the accessories listing page
-
-    # Render the update accessory form with the accessory object
+        
+        # Save the updated accessory
+        accessory.save()
+        
+        # Handle image updates
+        for i in range(1, 5):
+            image_field_name = f'image{i}'
+            if image_field_name in request.FILES:
+                # Get the corresponding accessory image object or create a new one if it doesn't exist
+                accessory_image, created = AccessoryImage.objects.get_or_create(accessory=accessory)
+                # Update the image field
+                setattr(accessory_image, image_field_name, request.FILES[image_field_name])
+                # Save the accessory image object
+                accessory_image.save()
+        
+        # Redirect to a success page or wherever needed
+        return redirect('admin_home')
     return render(request, 'update_accessory.html', {'accessory': accessory})
 
 
@@ -487,3 +499,8 @@ def delete_accessory(request, pk):
 
     # Render the delete confirmation page with the accessory object
     return render(request, 'delete_accessory.html', {'accessory': accessory})
+
+def accessory_view(request):
+    accessories = Accessory.objects.all()
+    accessory_images = AccessoryImage.objects.all() 
+    return render(request,'accessory_view.html',{'accessories': accessories, 'accessory_images': accessory_images})

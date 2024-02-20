@@ -1,0 +1,175 @@
+{% extends "admin_nav.html" %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        font-family: "Times New Roman", Times, serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+    }
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        background-color: #435ebe;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+	h2 {
+		font-family: "Times New Roman", Times, serif;
+	}
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+</style>
+<div class="container">
+    <center><h2>Update Accessory</h2></center>
+    <form action="#" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="accessory_name">Accessory Name:</label>
+            <input type="text" id="accessory_name" name="accessory_name" value="{{ accessory.accessory_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" value="{{ accessory.description }}" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price" value="{{ accessory.price }}" required>
+        </div>
+        <div class="form-group">
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" name="brand" value="{{ accessory.brand }}" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+                <option value="audio" {% if accessory.category == 'audio' %} selected {% endif %}>Audio</option>
+                <option value="body_parts" {% if accessory.category == 'body_parts' %} selected {% endif %}>Body Parts</option>
+                <option value="exterior" {% if accessory.category == 'exterior' %} selected {% endif %}>Exterior</option>
+                <option value="interior" {% if accessory.category == 'interior' %} selected {% endif %}>Interior</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="{{ accessory.quantity }}" required>
+        </div>
+        <div class="form-group">
+            <label for="warranty">Warranty:</label>
+            <input type="number" id="warranty" name="warranty" value="{{ accessory.warranty }}" required>
+        </div>
+        {% comment %} <div class="form-group">
+            <label for="images1">Images 1</label>
+            <input type="file" id="images1" name="images1">
+        </div>
+        <div class="form-group">
+            <label for="images2">Images 2</label>
+            <input type="file" id="images2" name="images2">
+        </div>
+        <div class="form-group">
+            <label for="images3">Images 3</label>
+            <input type="file" id="images3" name="images3">
+        </div>
+        <div class="form-group">
+            <label for="images4">Images 4</label>
+            <input type="file" id="images4" name="images4">
+        </div> {% endcomment %}
+
+        {% for image in accessory.images.all %}
+        <div class="form-group">
+            <label for="image{{ forloop.counter }}">Image {{ forloop.counter }}</label>
+            <img src="{{ image.image1.url }}" alt="Accessory Image" width="100">
+            <input type="file" id="image{{ forloop.counter }}" name="image{{ forloop.counter }}" accept="image/*">
+        </div>
+        {% endfor %}
+        
+        <div class="form-group">
+            <input type="submit" value="Update">
+        </div>
+    </form>
+</div>
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Accessory is updated!</p>
+    </div>
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    function showModal() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Add event listener to the form for form submission
+    document.getElementById("accessoryForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+        // Show modal
+        showModal();
+        // You can add additional actions here if needed
+    });
+</script>
+{% endblock %}
