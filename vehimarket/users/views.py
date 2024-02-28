@@ -500,7 +500,22 @@ def delete_accessory(request, pk):
     # Render the delete confirmation page with the accessory object
     return render(request, 'delete_accessory.html', {'accessory': accessory})
 
+@never_cache
+@login_required(login_url='login')
 def accessory_view(request):
     accessories = Accessory.objects.all()
     accessory_images = AccessoryImage.objects.all() 
     return render(request,'accessory_view.html',{'accessories': accessories, 'accessory_images': accessory_images})
+
+def admin_addcategory(request):
+    if request.method == 'POST':
+        accessory_name = request.POST.get('accessory_name')
+        if accessory_name:  # Check if accessory_name is not empty
+            category = Category(name=accessory_name)
+            category.save()
+            return redirect('admin_addcategory')  # Assuming you have a URL named 'category_list'
+    return render(request,'admin_addcategory.html')
+
+
+def accessories_detail(request):
+    return render(request,'accessories_detail.html')

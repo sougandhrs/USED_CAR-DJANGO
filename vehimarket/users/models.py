@@ -123,3 +123,9 @@ class AccessoryImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.accessory.accessory_name}"
+    
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    def __str__(self):
+        return self.name
