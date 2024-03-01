@@ -42,16 +42,15 @@
                       <div class="new-label new-top-left">Hot</div>
                       <div class="sale-label sale-top-left">-15%</div>
                       <div class="product-image">
-                        <div class="product-full"> <img id="product-zoom" src="products-images/p35.jpg" data-zoom-image="products-images/p35.jpg" alt="product-image"/> </div>
+                        <div class="product-full"> <img id="product-zoom" src="{{ accessory_images.first.image1.url }}" data-zoom-image="{{ accessory_images.first.image1.url }}" alt="product-image" /> </div>
                         <div class="more-views">
                           <div class="slider-items-products">
                             <div id="gallery_01" class="product-flexslider hidden-buttons product-img-thumb">
                               <div class="slider-items slider-width-col4 block-content">
-                                <div class="more-views-items"> <a href="#" data-image="products-images/p36.jpg" data-zoom-image="products-images/p36.jpg"> <img id="product-zoom0"  src="products-images/p36.jpg" alt="product-image"/> </a></div>
-                                <div class="more-views-items"> <a href="#" data-image="products-images/p45.jpg" data-zoom-image="products-images/p45.jpg"> <img id="product-zoom1"  src="products-images/p45.jpg" alt="product-image"/> </a></div>
-                                <div class="more-views-items"> <a href="#" data-image="products-images/p42.jpg" data-zoom-image="products-images/p42.jpg"> <img id="product-zoom2"  src="products-images/p42.jpg" alt="product-image"/> </a></div>
-                                <div class="more-views-items"> <a href="#" data-image="products-images/p33.jpg" data-zoom-image="products-images/p33.jpg"> <img id="product-zoom3"  src="products-images/p33.jpg" alt="product-image"/> </a> </div>
-                                <div class="more-views-items"> <a href="#" data-image="products-images/p38.jpg" data-zoom-image="products-images/p38.jpg"> <img id="product-zoom4"  src="products-images/p38.jpg" alt="product-image" /> </a></div>
+                                <div class="more-views-items"> <a href="#" data-image="{{ accessory_images.first.image1.url }}" data-zoom-image="{{ accessory_images.first.image1.url }}"> <img id="product-zoom0"  src="{{ accessory_images.first.image1.url }}" alt="product-image" style="width: 75px; height: 75px; object-fit: cover;" /> </a></div>
+                                <div class="more-views-items"> <a href="#" data-image="{{ accessory_images.first.image2.url }}" data-zoom-image="{{ accessory_images.first.image2.url }}"> <img id="product-zoom1"  src="{{ accessory_images.first.image2.url }}" alt="product-image" style="width: 75px; height: 75px; object-fit: cover;" /> </a></div>
+                                <div class="more-views-items"> <a href="#" data-image="{{ accessory_images.first.image3.url }}" data-zoom-image="{{ accessory_images.first.image3.url }}"> <img id="product-zoom2"  src="{{ accessory_images.first.image3.url }}" alt="product-image" style="width: 75px; height: 75px; object-fit: cover;" /> </a></div>
+                                <div class="more-views-items"> <a href="#" data-image="{{ accessory_images.first.image4.url }}" data-zoom-image="{{ accessory_images.first.image4.url }}"> <img id="product-zoom3"  src="{{ accessory_images.first.image4.url }}" alt="product-image" style="width: 75px; height: 75px; object-fit: cover;" /> </a> </div>
                               </div>
                             </div>
                           </div>
@@ -63,9 +62,9 @@
                   <!-- For version 3 -->
                   <div class="product-shop col-lg- col-sm-7 col-xs-12">
                       
-                      <div class="brand">XPERIA</div>
+                      <div class="brand">{{ accessory.brand }}</div>
                       <div class="product-name">
-                        <h1>Gorgeous Mercedes-Benz E-Class All-Terrain Luxury </h1>
+                        <h1>{{ accessory.accessory_name }}</h1>
                       </div>
                       <div class="ratings">
                         <div class="rating-box">
@@ -76,7 +75,7 @@
                       <div class="price-block">
                         <div class="price-box">
                         <p class="availability in-stock"><span>In Stock</span></p>
-                          <p class="special-price"> <span class="price-label">Special Price</span> <span id="product-price-48" class="price"> $309.99 </span> </p>
+                          <p class="special-price"> <span class="price-label">Special Price</span> <span id="product-price-48" class="price"> {{ accessory.price }} </span> </p>
                           
                           
                         </div>
@@ -95,14 +94,14 @@
                         
                       </div>
                       <div class="short-description">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu, suscipit id nulla. Donec a neque libero. </p>
+                                    <p>{{ accessory.description }} </p>
                       </div>
                       <div class="email-addto-box">
                           <ul class="add-to-links">
                             <li> <a class="link-wishlist" href="wishlist.html"><span>Add to Wishlist</span></a></li>
-                            <li><a class="link-compare" href="compare.html"><span>Add to Compare</span></a></li>
+                            {% comment %} <li><a class="link-compare" href="compare.html"><span>Add to Compare</span></a></li> {% endcomment %}
                           </ul>
-                          <p class="email-friend"><a href="#" class=""><span>Email to a Friend</span></a></p>
+                          {% comment %} <p class="email-friend"><a href="#" class=""><span>Email to a Friend</span></a></p> {% endcomment %}
                         </div>
                       <div class="social">
                         <ul class="link">

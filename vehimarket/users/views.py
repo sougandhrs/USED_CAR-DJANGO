@@ -274,8 +274,8 @@ def admin_logout_view(request):
 @login_required(login_url='login')
 def viewcar(request):
     available_cars = CarListing.objects.filter(status='available').exclude(seller__user=request.user)
-
     return render(request, 'viewcar.html', {'available_cars': available_cars})
+
 
 @login_required(login_url='admin_login') 
 def admin_carview(request):
@@ -517,5 +517,7 @@ def admin_addcategory(request):
     return render(request,'admin_addcategory.html')
 
 
-def accessories_detail(request):
-    return render(request,'accessories_detail.html')
+def accessories_detail(request,accessory_id):
+    accessory = get_object_or_404(Accessory, pk=accessory_id)
+    accessory_images = AccessoryImage.objects.filter(accessory=accessory)
+    return render(request,'accessories_detail.html', {'accessory': accessory, 'accessory_images': accessory_images})

@@ -83,7 +83,7 @@
             <li class="item first">
               <div class="product-image"> <a href="product-detail.html" title="{{ accessory.accessory_name }}"> <img class="small-image" src="{{ accessory.images.first.image1.url }}" alt="{{ accessory.accessory_name }}"> </a> </div>
               <div class="product-shop">
-                <h2 class="product-name"><a href="product-detail.html" title="{{ accessory.accessory_name }}">{{ accessory.accessory_name }}</a></h2>
+                <h2 class="product-name"><a href="{% url 'accessories_detail' accessory.id %}" title="{{ accessory.accessory_name }}">{{ accessory.accessory_name }}</a></h2>
                 <div class="ratings">
                   <div class="rating-box">
                     <div style="width:50%" class="rating"></div>
