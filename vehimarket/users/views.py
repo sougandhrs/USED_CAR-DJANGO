@@ -521,3 +521,7 @@ def accessories_detail(request,accessory_id):
     accessory = get_object_or_404(Accessory, pk=accessory_id)
     accessory_images = AccessoryImage.objects.filter(accessory=accessory)
     return render(request,'accessories_detail.html', {'accessory': accessory, 'accessory_images': accessory_images})
+
+
+def accessories_wishlist(request):
+    return render(request,'accessories_wishlist.html')

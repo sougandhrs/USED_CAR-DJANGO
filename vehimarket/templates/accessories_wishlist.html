@@ -1,0 +1,62 @@
+{% extends "nav.html" %}
+{% load static %}
+{% block content %}
+<title>Accessories Wishlist</title>
+<style>
+/* Unique ID for wishlist page */
+#wishlist-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#wishlist-container .wishlist-item {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+#wishlist-container .wishlist-item h2 {
+    margin-top: 0;
+}
+
+#wishlist-container .add-to-cart-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #435ebe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#wishlist-container .add-to-cart-btn:hover {
+    background-color: #45a049;
+}
+</style>
+
+<div id="wishlist-container">
+    <div class="wishlist-item">
+        <h2>Product 1</h2>
+        <p>Description of product 1.</p>
+        <button class="add-to-cart-btn">Add to Cart</button>
+    </div>
+    <div class="wishlist-item">
+        <h2>Product 2</h2>
+        <p>Description of product 2.</p>
+        <button class="add-to-cart-btn">Add to Cart</button>
+    </div>
+    <div class="wishlist-item">
+        <h2>Product 3</h2>
+        <p>Description of product 3.</p>
+        <button class="add-to-cart-btn">Add to Cart</button>
+    </div>
+</div>
+
+{% endblock %}
