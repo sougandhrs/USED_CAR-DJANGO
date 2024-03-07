@@ -270,6 +270,7 @@ def admin_logout_view(request):
     logout(request)
     return redirect('index')
 
+
 @never_cache
 @login_required(login_url='login')
 def viewcar(request):
@@ -333,6 +334,7 @@ def admin_assign_timeslots(request):
         return redirect('admin_home')
     return render(request,'admin_assign_timeslots.html')
 
+
 @never_cache
 @login_required(login_url='login')
 def chatwithadmin(request):
@@ -395,7 +397,6 @@ def payment(request,car_id,booking_id):
         'currency': order_data['currency'],
         'order_id': order['id'],
     }
-
     return render(request, 'payment.html', context)
 
 
@@ -500,12 +501,15 @@ def delete_accessory(request, pk):
     # Render the delete confirmation page with the accessory object
     return render(request, 'delete_accessory.html', {'accessory': accessory})
 
+
 @never_cache
 @login_required(login_url='login')
 def accessory_view(request):
     accessories = Accessory.objects.all()
     accessory_images = AccessoryImage.objects.all() 
     return render(request,'accessory_view.html',{'accessories': accessories, 'accessory_images': accessory_images})
+
+
 
 def admin_addcategory(request):
     if request.method == 'POST':
@@ -523,5 +527,17 @@ def accessories_detail(request,accessory_id):
     return render(request,'accessories_detail.html', {'accessory': accessory, 'accessory_images': accessory_images})
 
 
+
 def accessories_wishlist(request):
-    return render(request,'accessories_wishlist.html')
+    user_wishlist_items = Wishlist.objects.filter(user=request.user)
+    return render(request,'accessories_wishlist.html', {'user_wishlist_items': user_wishlist_items})
+
+
+def add_to_wishlist(request, accessory_id):
+    accessory = Accessory.objects.get(pk=accessory_id)
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+    if not wishlist.accessories.filter(pk=accessory_id).exists():
+        wishlist.accessories.add(accessory)
+    return redirect('accessories_detail', accessory_id=accessory_id)
+
+

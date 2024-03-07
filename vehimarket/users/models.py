@@ -129,3 +129,12 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     def __str__(self):
         return self.name
+    
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accessories = models.ManyToManyField('Accessory')
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Wishlist for {self.user.username}"
