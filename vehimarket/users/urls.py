@@ -40,4 +40,5 @@ urlpatterns = [
     path('accessories/<int:accessory_id>/add_to_wishlist/',views.add_to_wishlist, name='add_to_wishlist'),
     path('accessories_wishlist/',views.accessories_wishlist,name='accessories_wishlist'),
     path('wishlist/remove/<int:item_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+    path('check_availability/', views.check_availability, name='check_availability'),
 ]

@@ -548,4 +548,15 @@ def remove_from_wishlist(request, item_id):
         return redirect('accessories_wishlist')  # Redirect to the wishlist page after deletion
     else:
         return redirect('accessories_wishlist') 
+    
+
+
+def check_availability(request):
+    if request.method == 'GET':
+        accessory_id = request.GET.get('accessory_id')
+        accessory = get_object_or_404(Accessory, pk=accessory_id)
+        available = accessory.quantity > 0  # Check if the quantity is greater than 0
+        return JsonResponse({'available': available})
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
 

@@ -74,7 +74,7 @@
                       </div>
                       <div class="price-block">
                         <div class="price-box">
-                        <p class="availability in-stock"><span>In Stock</span></p>
+                          <p class="availability in-stock" id="availability"><span>In Stock</span></p>
                           <p class="special-price"> <span class="price-label">Special Price</span> <span id="product-price-48" class="price"> {{ accessory.price }} </span> </p>
                           
                           
@@ -88,6 +88,7 @@
                               <input type="text" class="input-text qty" title="Qty" value="1" maxlength="12" id="qty" name="qty">
                               <button onclick="var result = document.getElementById('qty'); var qty = result.value; if( !isNaN( qty )) result.value++;return false;" class="increase items-count" type="button"><i class="fa fa-plus">&nbsp;</i></button>
                             </div>
+                            
                           </div>
                           <button onclick="productAddToCartForm.submit(this)" class="button btn-cart" title="Add to Cart" type="button">Add to Cart</button>
                         </div>
@@ -274,5 +275,36 @@
     <!--main-container-->
     <!--body-->
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        function checkAvailability(accessoryId) {
+            $.ajax({
+                url: '/check_availability/',  // URL to your Django view for checking availability
+                type: 'GET',
+                data: {
+                    'accessory_id': accessoryId
+                },
+                success: function(response) {
+                    if (response.available) {
+                        $('#availability span').text('In Stock');
+                        $('#availability span').css('color', 'green');
+                    } else {
+                        $('#availability span').text('Out of Stock');
+                        $('#availability span').css('color', 'red');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Call the function when the page loads or when needed
+        var accessoryId = {{ accessory.id }};  // Replace with the actual accessory ID from Django template
+        checkAvailability(accessoryId);
+    });
+</script>
+
 
 {% endblock %}
