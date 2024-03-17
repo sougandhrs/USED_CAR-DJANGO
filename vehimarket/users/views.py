@@ -541,3 +541,11 @@ def add_to_wishlist(request, accessory_id):
     return redirect('accessories_detail', accessory_id=accessory_id)
 
 
+def remove_from_wishlist(request, item_id):
+    if request.method == 'POST':
+        wishlist_item = get_object_or_404(Wishlist, id=item_id)
+        wishlist_item.delete()
+        return redirect('accessories_wishlist')  # Redirect to the wishlist page after deletion
+    else:
+        return redirect('accessories_wishlist') 
+

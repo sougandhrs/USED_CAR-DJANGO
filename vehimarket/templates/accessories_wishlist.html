@@ -46,33 +46,93 @@
     .add-to-cart-btn:hover {
         background-color: #45a049;
     }
-    </style>
     
-    <div id="wishlist-container">
-        {% if user_wishlist_items %}
-            {% for item in user_wishlist_items %}
-                <div class="wishlist-item">
-                    <div class="wishlist-item-image">
-                        {% if item.accessories.first.images.first %}
-                            <img src="{{ item.accessories.first.images.first.image1.url }}" alt="Accessory Image">
-                        {% else %}
-                            <p>No image available</p>
-                        {% endif %}
-                    </div>
-                    <div class="wishlist-item-details">
-                        <h2>Product {{ forloop.counter }}</h2>
-                        {% for accessory in item.accessories.all %}
-                            <p>Accessory Name: {{ accessory.accessory_name }}</p>
-                            <p>Description: {{ accessory.description }}</p>
-                        {% endfor %}
+    .remove-from-wishlist-btn {
+        background-color: #ff6347;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .remove-from-wishlist-btn {
+        margin-top: 10px;
+        display: block;
+        background-color: #435ebe;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px; /* Same padding as Add to Cart button */
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .remove-from-wishlist-btn:hover {
+        background-color: #45a049;
+    }
+
+    /* CSS for button container and buttons */
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
+.add-to-cart-btn,
+.remove-from-wishlist-btn {
+    margin-top: 10px;
+    background-color: #435ebe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart-btn:hover,
+.remove-from-wishlist-btn:hover {
+    background-color: #45a049;
+}
+
+.remove-from-wishlist-btn {
+    margin-left: 10px; /* Add spacing between the buttons */
+}
+
+</style>
+
+<div id="wishlist-container">
+    {% if user_wishlist_items %}
+        {% for item in user_wishlist_items %}
+            <div class="wishlist-item">
+                <div class="wishlist-item-image">
+                    {% if item.accessories.first.images.first %}
+                        <img src="{{ item.accessories.first.images.first.image1.url }}" alt="Accessory Image">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                </div>
+                <div class="wishlist-item-details">
+                    <h2>Product {{ forloop.counter }}</h2>
+                    {% for accessory in item.accessories.all %}
+                        <p>Accessory Name: {{ accessory.accessory_name }}</p>
+                        <p>Description: {{ accessory.description }}</p>
+                    {% endfor %}
+                    <div class="button-container">
                         <button class="add-to-cart-btn">Add to Cart</button>
+                        <form action="{% url 'remove_from_wishlist' item.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="remove-from-wishlist-btn">Remove from Wishlist</button>
+                        </form>
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>No items in your wishlist.</p>
-        {% endif %}
-    </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No items in your wishlist.</p>
+    {% endif %}
+</div>
+
 
 {% endblock %}
-
