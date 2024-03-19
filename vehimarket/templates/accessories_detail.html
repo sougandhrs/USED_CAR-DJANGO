@@ -84,13 +84,13 @@
                         <div class="add-to-cart">
                           <div class="pull-left">
                             <div class="custom pull-left">
-                              <button onclick="var result = document.getElementById('qty'); var qty = result.value; if( !isNaN( qty ) &amp;&amp; qty > 0 ) result.value--;return false;" class="reduced items-count" type="button"><i class="fa fa-minus">&nbsp;</i></button>
-                              <input type="text" class="input-text qty" title="Qty" value="1" maxlength="12" id="qty" name="qty">
-                              <button onclick="var result = document.getElementById('qty'); var qty = result.value; if( !isNaN( qty )) result.value++;return false;" class="increase items-count" type="button"><i class="fa fa-plus">&nbsp;</i></button>
+                                <button onclick="decrementQuantity()" class="reduced items-count" type="button"><i class="fa fa-minus"></i></button>
+                                <input type="text" class="input-text qty" title="Qty" value="1" maxlength="12" id="qty" name="qty">
+                                <button onclick="incrementQuantity()" class="increase items-count" type="button"><i class="fa fa-plus"></i></button>
                             </div>
-                            
-                          </div>
-                          <button onclick="productAddToCartForm.submit(this)" class="button btn-cart" title="Add to Cart" type="button">Add to Cart</button>
+                        </div>
+                        <button onclick="addToCart()" class="button btn-cart" title="Add to Cart" type="button">Add to Cart</button>
+
                         </div>
                         
                       </div>
@@ -305,6 +305,58 @@
         checkAvailability(accessoryId);
     });
 </script>
+<script>
+  function incrementQuantity() {
+      var quantityInput = document.getElementById('qty');
+      var currentQuantity = parseInt(quantityInput.value);
+      if (!isNaN(currentQuantity) && currentQuantity < 10) {
+          quantityInput.value = currentQuantity + 1;
+      }
+  }
+
+  function decrementQuantity() {
+      var quantityInput = document.getElementById('qty');
+      var currentQuantity = parseInt(quantityInput.value);
+      if (!isNaN(currentQuantity) && currentQuantity > 1) {
+          quantityInput.value = currentQuantity - 1;
+      }
+  }
+</script>
+{% csrf_token %}
+<script>
+  function addToCart() {
+      var quantity = document.getElementById('qty').value;
+      var accessoryId = {{ accessory.id }};
+      var url = `/add-to-cart/${accessoryId}/`;
+
+      var formData = new FormData();
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');  // Include the CSRF token
+      formData.append('qty', quantity);
+
+      fetch(url, {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'X-CSRFToken': '{{ csrf_token }}'  // Also include CSRF token in headers
+          }
+      })
+      .then(response => {
+          if (response.ok) {
+              // Handle success, e.g., redirect to the cart page
+              window.location.href = '{% url "cart" %}';
+          } else {
+              // Handle error
+              console.error('Error adding item to cart:', response.statusText);
+          }
+      })
+      .catch(error => {
+          console.error('Fetch error:', error);
+      });
+  }
+</script>
+
+
+
 
 
 {% endblock %}

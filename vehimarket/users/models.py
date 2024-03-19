@@ -138,3 +138,13 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"Wishlist for {self.user.username}"
+    
+
+class AddToCart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accessory = models.ForeignKey(Accessory, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.accessory.accessory_name} ({self.quantity})"

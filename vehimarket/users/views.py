@@ -521,6 +521,9 @@ def admin_addcategory(request):
     return render(request,'admin_addcategory.html')
 
 
+
+@never_cache
+@login_required(login_url='login')
 def accessories_detail(request,accessory_id):
     accessory = get_object_or_404(Accessory, pk=accessory_id)
     accessory_images = AccessoryImage.objects.filter(accessory=accessory)
@@ -528,11 +531,17 @@ def accessories_detail(request,accessory_id):
 
 
 
+
+@never_cache
+@login_required(login_url='login')
 def accessories_wishlist(request):
     user_wishlist_items = Wishlist.objects.filter(user=request.user)
     return render(request,'accessories_wishlist.html', {'user_wishlist_items': user_wishlist_items})
 
 
+
+@never_cache
+@login_required(login_url='login')
 def add_to_wishlist(request, accessory_id):
     accessory = Accessory.objects.get(pk=accessory_id)
     wishlist, created = Wishlist.objects.get_or_create(user=request.user)
@@ -541,6 +550,9 @@ def add_to_wishlist(request, accessory_id):
     return redirect('accessories_detail', accessory_id=accessory_id)
 
 
+
+@never_cache
+@login_required(login_url='login')
 def remove_from_wishlist(request, item_id):
     if request.method == 'POST':
         wishlist_item = get_object_or_404(Wishlist, id=item_id)
@@ -560,3 +572,51 @@ def check_availability(request):
     else:
         return JsonResponse({'error': 'Invalid request method'})
 
+
+
+def add_to_cart(request, accessory_id):
+    accessory = get_object_or_404(Accessory, pk=accessory_id)
+    if request.method == 'POST':
+        quantity = request.POST.get('qty', 1)  # Assuming the quantity input field is named 'qty'
+        if quantity.isdigit():  # Check if quantity is a valid integer
+            quantity = int(quantity)
+            if 1 <= quantity <= 10:  # Ensure quantity is between 1 and 10
+                user = request.user  # Assuming you have user authentication enabled
+                existing_cart_item = AddToCart.objects.filter(user=user, accessory=accessory).first()
+
+                if existing_cart_item:
+                    # Item already exists in the cart, you can handle this scenario as needed
+                    # For example, show a message to the user that the item is already in the cart
+                    return redirect('cart')  # Redirect to the cart page or any other page
+                else:
+                    # Item does not exist in the cart, create a new entry
+                    add_to_cart_item = AddToCart.objects.create(user=user, accessory=accessory, quantity=quantity)
+                    return redirect('cart')  # Replace 'cart' with your actual cart URL name
+
+    # Handle invalid quantity or other scenarios as needed
+    return redirect('accessories_detail', accessory_id=accessory_id)
+
+
+
+def cart(request):
+    # Get the list of accessories added to the cart by the user
+    cart_items = AddToCart.objects.filter(user=request.user)
+    context = {
+        'cart_items': cart_items
+    }
+    return render(request, 'cart.html', context)
+
+
+
+def remove_from_cart(request, item_id):
+    # Get the cart item to be removed
+    cart_item = get_object_or_404(AddToCart, id=item_id)
+    
+    # Check if the cart item belongs to the logged-in user
+    if cart_item.user == request.user:
+        cart_item.delete()
+        messages.success(request, 'Item removed from cart successfully.')
+    else:
+        messages.error(request, 'You are not authorized to remove this item from the cart.')
+    
+    return redirect('cart')
