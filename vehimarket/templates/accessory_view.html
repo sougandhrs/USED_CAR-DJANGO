@@ -99,7 +99,7 @@
                   <p class="special-price"> <span class="price-label"></span> <span id="product-price-212" class="price"> ${{ accessory.price }}</span> </p>
                 </div>
                 <div class="actions">
-                  <button class="button btn-cart ajx-cart" title="Add to Cart" type="button"><span>Add to Cart</span></button>
+                  <button onclick="addToCart({{ accessory.id }})" class="button btn-cart ajx-cart" title="Add to Cart" type="button"><span>Add to Cart</span></button>
                   <span class="add-to-links"> <a title="Add to Wishlist" class="button link-wishlist" href="{% url 'add_to_wishlist' accessory.id %}"><span>Add to Wishlist</span></a> <a title="Add to Compare" class="button link-compare" href="#"><span>Add to Compare</span></a> </span> </div>
               </div>
             </li>
@@ -303,5 +303,34 @@
     <!--container--> 
   </section>
   <!--main-container col2-left-layout--> 
+
+  <script>
+    function addToCart(accessoryId) {
+        var url = `/add-to-cart/${accessoryId}/`;
+
+        var formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');  // Include the CSRF token
+
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // Also include CSRF token in headers
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle success, e.g., redirect to the cart page
+                window.location.href = '{% url "cart" %}';
+            } else {
+                // Handle error
+                console.error('Error adding item to cart:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+</script>
 
 {% endblock %}

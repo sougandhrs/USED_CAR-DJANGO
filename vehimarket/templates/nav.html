@@ -305,7 +305,7 @@
                         <!--sub sub category-->
                         <ul class="level1">
                           <li class="level1"> <a href="about-us.html"> <span>About us</span> </a> </li>
-                          <li class="level1 nav-10-4"> <a href="shopping-cart.html"> <span>Cart Page</span> </a> </li>
+                          <li class="level1 nav-10-4"> <a href="{% url 'cart' %}"> <span>Cart Page</span> </a> </li>
                           <li class="level1 first parent"><a href="checkout.html"><span>Checkout</span></a> 
                             <!--sub sub category-->
                             <ul class="level2 right-sub">
@@ -314,7 +314,7 @@
                             </ul>
                             <!--sub sub category--> 
                           </li>
-                          {% comment %} <li class="level1 nav-10-4"> <a href="wishlist.html"> <span>Wishlist</span> </a> </li> {% endcomment %}
+                          <li class="level1 nav-10-4"> <a href="{% url 'accessories_wishlist' %}"> <span>Wishlist</span> </a> </li>
                           <li class="level1"> <a href="dashboard.html"> <span>Dashboard</span> </a> </li>
                           {% comment %} <li class="level1"> <a href="multiple-addresses.html"> <span>Multiple Addresses</span> </a> </li> {% endcomment %}
                           <li class="level1"><a href="contact-us.html"><span>Contact us</span></a> </li>

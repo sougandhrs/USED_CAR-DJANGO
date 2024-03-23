@@ -577,15 +577,15 @@ def check_availability(request):
 def add_to_cart(request, accessory_id):
     accessory = get_object_or_404(Accessory, pk=accessory_id)
     if request.method == 'POST':
-        quantity = request.POST.get('qty', 1)  # Assuming the quantity input field is named 'qty'
-        if quantity.isdigit():  # Check if quantity is a valid integer
+        quantity = request.POST.get('qty', '1')  # Default to '1' if 'qty' is not provided
+        if str(quantity).isdigit():  # Ensure quantity is a valid integer
             quantity = int(quantity)
             if 1 <= quantity <= 10:  # Ensure quantity is between 1 and 10
                 user = request.user  # Assuming you have user authentication enabled
                 existing_cart_item = AddToCart.objects.filter(user=user, accessory=accessory).first()
 
                 if existing_cart_item:
-                    # Item already exists in the cart, you can handle this scenario as needed
+                    # Item already exists in the cart, handle this scenario as needed
                     # For example, show a message to the user that the item is already in the cart
                     return redirect('cart')  # Redirect to the cart page or any other page
                 else:
@@ -595,6 +595,7 @@ def add_to_cart(request, accessory_id):
 
     # Handle invalid quantity or other scenarios as needed
     return redirect('accessories_detail', accessory_id=accessory_id)
+
 
 
 
