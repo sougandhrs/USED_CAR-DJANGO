@@ -148,3 +148,16 @@ class AddToCart(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.accessory.accessory_name} ({self.quantity})"
+    
+
+    
+class AccessoryPayment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accessory = models.ForeignKey(Accessory, on_delete=models.CASCADE)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_datetime = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(max_length=20, default='Pending')
+    quantity = models.PositiveIntegerField(default=1)  # New field for quantity
+
+    def __str__(self):
+        return f"Accessory Payment {self.id} - {self.accessory.accessory_name}"

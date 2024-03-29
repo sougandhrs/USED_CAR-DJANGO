@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Head content -->
+</head>
+<body>
+    <div class="container">
+        <h1 class="title mb-5">Accessory Payment</h1>
+        <p class="description text-grey">To purchase this accessory, please make a payment of ₹700.</p>
+        <div class="btn-container">
+            <button class="btn" id="pay-btn">Pay Now</button>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            key: "{{ razorpay_merchant_key }}",
+            amount: "{{ razorpay_amount }}",
+            currency: "{{ currency }}",
+            order_id: "{{ razorpay_order_id }}",
+            callback_url: "{{ callback_url }}",
+        };
+
+        var rzp1 = new Razorpay(options);
+        
+        document.getElementById("pay-btn").onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        };
+    </script>
+</body>
+</html>
