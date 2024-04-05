@@ -31,23 +31,86 @@ class Hosttest(TestCase):
         submit=driver.find_element(By.CSS_SELECTOR,"button#send2.button.login[title='Login'][name='send'] > span")
         submit.click()
         time.sleep(4)
-        redirect=driver.find_element(By.CSS_SELECTOR,"a.sidebar-link[href='/admin_assign_timeslots'] > span")
+        redirect=driver.find_element(By.CSS_SELECTOR,"a.sidebar-link[href='/adminaccessoriesadd'] > span")
         redirect.click()
         time.sleep(4)
-        input_date1 = "2023-12-10"
-        formatted_date = datetime.strptime(input_date1, '%Y-%m-%d').strftime('%Y-%m-%d')
-        opendate_input = driver.find_element(By.CSS_SELECTOR, "input.form-control[type='date'][name='date'][required]")
-        opendate_input.send_keys(formatted_date)
+        aname=driver.find_element(By.CSS_SELECTOR,"input#accessory_name[type='text'][name='accessory_name'][required]")
+        aname.clear()
+        aname.send_keys("Alloy")
         time.sleep(1)
-        select=driver.find_element(By.CSS_SELECTOR,"select.form-control[name='time_slots'][multiple][required]")
-        select.click()
-        time.sleep(4)
-        slot=driver.find_element(By.CSS_SELECTOR,"option[value='morning']")
-        slot.click()
-        time.sleep(4)
-        assign=driver.find_element(By.CSS_SELECTOR,"button.btn.btn-primary[type='submit']")
-        assign.click()
-        time.sleep(4)
+        descrip=driver.find_element(By.CSS_SELECTOR,"input#description[type='text'][name='description'][required]")
+        descrip.clear()
+        descrip.send_keys("Very Nice Stylish Alloy")
+        time.sleep(1)
+        price=driver.find_element(By.CSS_SELECTOR,"input#price[type='text'][name='price'][required]")
+        price.clear()
+        price.send_keys("40000")
+        time.sleep(1)
+        brand=driver.find_element(By.CSS_SELECTOR,"input#brand[type='text'][name='brand'][required]")
+        brand.clear()
+        brand.send_keys("BBS")
+        time.sleep(1)
+        atype=driver.find_element(By.CSS_SELECTOR,"select#category[name='category']")
+        atype.click()
+        atypeselect=driver.find_element(By.CSS_SELECTOR,"option[value='exterior']")
+        atypeselect.click()
+        time.sleep(1)
+        quant=driver.find_element(By.CSS_SELECTOR,"input#quantity[type='number'][name='quantity'][required]")
+        quant.clear()
+        quant.send_keys("20")
+        time.sleep(1)
+        warr=driver.find_element(By.CSS_SELECTOR,"input#warranty[type='number'][name='warranty'][required]")
+        warr.clear()
+        warr.send_keys("5")
+        time.sleep(1)
+        file_path = 'C:\\Users\\souga\\Downloads\\bbs1.png'
+        thumbnail_image_input = driver.find_element(By.CSS_SELECTOR, "input#images1[type='file'][name='images1']")
+        thumbnail_image_input.send_keys(file_path)
+        time.sleep(3)
+        file_path2 = 'C:\\Users\\souga\\Downloads\\bbs2.png'
+        thumbnail_image_input2 = driver.find_element(By.CSS_SELECTOR, "input#images2[type='file'][name='images2']")
+        thumbnail_image_input2.send_keys(file_path2)
+        time.sleep(3)
+        file_path3 = 'C:\\Users\\souga\\Downloads\\bbs3.png'
+        thumbnail_image_input3 = driver.find_element(By.CSS_SELECTOR, "input#images3[type='file'][name='images3']")
+        thumbnail_image_input3.send_keys(file_path3)
+        time.sleep(3)
+        file_path4 = 'C:\\Users\\souga\\Downloads\\bbs4.png'
+        thumbnail_image_input4 = driver.find_element(By.CSS_SELECTOR, "input#images4[type='file'][name='images4']")
+        thumbnail_image_input4.send_keys(file_path4)
+        time.sleep(3)
+        submit_button = driver.find_element(By.CSS_SELECTOR, "input[type='submit'][value='Submit']")
+        submit_button.click()
+        time.sleep(5)
+
+
+        
+
+
+
+
+
+
+
+        
+        
+        # redirect=driver.find_element(By.CSS_SELECTOR,"a.sidebar-link[href='/admin_assign_timeslots'] > span")
+        # redirect.click()
+        # time.sleep(4)
+        # input_date1 = "2023-12-10"
+        # formatted_date = datetime.strptime(input_date1, '%Y-%m-%d').strftime('%Y-%m-%d')
+        # opendate_input = driver.find_element(By.CSS_SELECTOR, "input.form-control[type='date'][name='date'][required]")
+        # opendate_input.send_keys(formatted_date)
+        # time.sleep(1)
+        # select=driver.find_element(By.CSS_SELECTOR,"select.form-control[name='time_slots'][multiple][required]")
+        # select.click()
+        # time.sleep(4)
+        # slot=driver.find_element(By.CSS_SELECTOR,"option[value='morning']")
+        # slot.click()
+        # time.sleep(4)
+        # assign=driver.find_element(By.CSS_SELECTOR,"button.btn.btn-primary[type='submit']")
+        # assign.click()
+        # time.sleep(4)
 
 
 

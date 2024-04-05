@@ -23,6 +23,9 @@ from .models import Accessory, AccessoryImage
 from django.urls import reverse
 from .models import Payment
 import razorpay
+from django.shortcuts import render
+from django.conf import settings
+from decimal import Decimal
 
 
 # Create your views here.
@@ -602,13 +605,20 @@ def add_to_cart(request, accessory_id):
 
 
 
+from django.shortcuts import render
+from .models import AddToCart
+
 def cart(request):
-    # Get the list of accessories added to the cart by the user
+    # Get all the cart items for the current user
     cart_items = AddToCart.objects.filter(user=request.user)
+    
     context = {
-        'cart_items': cart_items
+        'cart_items': cart_items,
+        'your_accessory_id_variable': cart_items.first().accessory.id if cart_items.exists() else None,  # Assuming you want the ID of the first item in the cart
     }
     return render(request, 'cart.html', context)
+
+
 
 
 
@@ -626,3 +636,110 @@ def remove_from_cart(request, item_id):
     return redirect('cart')
 
 
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+
+def accessory_payment(request):
+    # Fetch the cart items for the current user
+    cart_items = AddToCart.objects.filter(user=request.user)
+    
+    currency = 'INR'
+    
+    # Calculate the subtotal of the cart items
+    sub_total = sum([
+        item.accessory.price * item.quantity
+        if item.accessory is not None and item.quantity is not None
+        else 0
+        for item in cart_items
+    ])
+    
+    # Calculate the total price as a Decimal
+    total_price = Decimal(sub_total)
+    
+    # Convert the total price to an integer amount in paise (100 paise = 1 rupee)
+    amount = int(total_price * 100)
+    
+    # Create a Razorpay order with the calculated amount
+    razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
+    
+    razorpay_order_id = razorpay_order["id"]
+    
+    # Create the Order object and save it
+    order = Order.objects.create(
+        user=request.user,
+        amount=amount,
+        razorpay_order_id=razorpay_order_id,
+        payment_status=Order.PaymentStatusChoices.PENDING
+    )
+    
+    # Loop through cart items to store accessory ID and quantity in OrderItem instances
+    for item in cart_items:
+        order_item = OrderItem.objects.create(order=order, accessory=item.accessory, quantity=item.quantity)
+    
+    # Prepare context data to pass to the template
+    context = {
+        'cart_items': cart_items,
+        'amount': amount,
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_merchant_key': settings.RAZORPAY_API_KEY,
+        'razorpay_amount': amount,
+        'currency': currency,
+        'callback_url': reverse('payment_confirm'),  # Assuming 'payment_confirm' is the correct URL name
+    }
+
+    # Render the payment page with the context data
+    return render(request, "payment_accessories.html", context=context)
+
+
+@csrf_exempt
+def payment_confirm(request, accessory_id):  # Changed the view name
+    if request.method == "POST":
+        try:
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature,
+            }
+
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            if result is not None:
+                payment=Order.objects.get(razorpay_order_id= razorpay_order_id)
+                razorpay_order= razorpay_client.order.fetch(razorpay_order_id)
+                authorized_amount=razorpay_order['amount']
+                # payment_info = razorpay_client.payment.fetch(payment_id)
+                # amount = payment_info["amount"]
+                # rupees = amount / 100
+
+                razorpay_client.payment.capture(payment_id, authorized_amount)
+                payment.payment_id=payment_id
+                payment.payment_status=payment.PaymentStatusChoices.SUCCESSFUL
+                payment.save()
+                
+                # Update the payment status and create a Payment instance
+                accessory = get_object_or_404(Accessory, pk=accessory_id)
+                # payment_status = "Successful"
+                # payment = AccessoryPayment.objects.create(user=request.user, accessory=accessory,
+                #                                       payment_amount=authorized_amount, payment_status=payment_status)
+
+                # Check if the accessory stock is sufficient
+                if accessory.quantity < payment.quantity:
+                    return render(request,'paymentfail.html',{'messages':'Insufficient stock'})
+
+                # Decrease the accessory quantity in stock
+                accessory.quantity -= payment.quantity
+                accessory.save()
+
+                # Delete cart items after successful payment
+                cart_items = AddToCart.objects.filter(user=request.user)
+                cart_items.delete()
+                
+                return render(request, "paymentsuccess.html")
+            else:
+                return render(request, "paymentfail.html")
+        except Exception as e:
+            print(f"Error processing payment: {e}")
+            return render(request, "paymentfail.html")
+    else:
+        return redirect('accessories_detail', accessory_id=accessory_id)

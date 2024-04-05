@@ -150,7 +150,38 @@ class AddToCart(models.Model):
         return f"{self.user.username} - {self.accessory.accessory_name} ({self.quantity})"
     
 
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # accessory = models.ForeignKey(Accessory, on_delete=models.CASCADE, default=1)  
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    razorpay_order_id = models.CharField(max_length=255)
+    # quantity = models.PositiveIntegerField(default=1)  
+    payment_datetime = models.DateTimeField(default='2024-04-04T00:00:00Z')  # Set a default value
+
+    class PaymentStatusChoices(models.TextChoices):
+        PENDING = 'Pending', 'Pending'
+        SUCCESSFUL = 'Successful', 'Successful'
+        FAILED = 'Failed', 'Failed'
     
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PaymentStatusChoices.choices,
+        default=PaymentStatusChoices.PENDING
+    )
+    
+    def __str__(self):
+        return f"Order {self.id} - {self.user.username} - {self.payment_status}"
+    
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    accessory = models.ForeignKey(Accessory, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"Order Item {self.id} - {self.order_id} - {self.accessory.accessory_name} - {self.quantity}"
+
+
 class AccessoryPayment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     accessory = models.ForeignKey(Accessory, on_delete=models.CASCADE)
