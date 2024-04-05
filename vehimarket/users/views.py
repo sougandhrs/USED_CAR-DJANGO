@@ -691,7 +691,7 @@ def accessory_payment(request):
 
 
 @csrf_exempt
-def payment_confirm(request, accessory_id):  # Changed the view name
+def payment_confirm(request):
     if request.method == "POST":
         try:
             payment_id = request.POST.get('razorpay_payment_id', '')
@@ -705,35 +705,25 @@ def payment_confirm(request, accessory_id):  # Changed the view name
 
             result = razorpay_client.utility.verify_payment_signature(params_dict)
             if result is not None:
-                payment=Order.objects.get(razorpay_order_id= razorpay_order_id)
-                razorpay_order= razorpay_client.order.fetch(razorpay_order_id)
-                authorized_amount=razorpay_order['amount']
-                # payment_info = razorpay_client.payment.fetch(payment_id)
-                # amount = payment_info["amount"]
-                # rupees = amount / 100
-
-                razorpay_client.payment.capture(payment_id, authorized_amount)
-                payment.payment_id=payment_id
-                payment.payment_status=payment.PaymentStatusChoices.SUCCESSFUL
-                payment.save()
-                
+                # Fetch the order using razorpay_order_id
+                order = Order.objects.get(razorpay_order_id=razorpay_order_id)
                 # Update the payment status and create a Payment instance
-                accessory = get_object_or_404(Accessory, pk=accessory_id)
-                # payment_status = "Successful"
-                # payment = AccessoryPayment.objects.create(user=request.user, accessory=accessory,
-                #                                       payment_amount=authorized_amount, payment_status=payment_status)
-
-                # Check if the accessory stock is sufficient
-                if accessory.quantity < payment.quantity:
-                    return render(request,'paymentfail.html',{'messages':'Insufficient stock'})
-
-                # Decrease the accessory quantity in stock
-                accessory.quantity -= payment.quantity
-                accessory.save()
-
-                # Delete cart items after successful payment
-                cart_items = AddToCart.objects.filter(user=request.user)
-                cart_items.delete()
+                order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
+                order.save()
+                
+                # Fetch the cart items associated with the order
+                cart_items = AddToCart.objects.filter(order=order)
+                
+                # Loop through cart items to update accessory stock and delete cart items
+                for item in cart_items:
+                    accessory = item.accessory
+                    if accessory.quantity >= item.quantity:
+                        accessory.quantity -= item.quantity
+                        accessory.save()
+                    else:
+                        return render(request, 'paymentfail.html', {'messages': 'Insufficient stock'})
+                
+                cart_items.delete()  # Delete cart items after successful payment
                 
                 return render(request, "paymentsuccess.html")
             else:
@@ -742,4 +732,4 @@ def payment_confirm(request, accessory_id):  # Changed the view name
             print(f"Error processing payment: {e}")
             return render(request, "paymentfail.html")
     else:
-        return redirect('accessories_detail', accessory_id=accessory_id)
+        return redirect('accessory_payment')  # Redirect to the payment page if not a POST request
