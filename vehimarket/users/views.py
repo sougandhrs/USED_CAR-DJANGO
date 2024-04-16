@@ -26,6 +26,18 @@ import razorpay
 from django.shortcuts import render
 from django.conf import settings
 from decimal import Decimal
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django_xhtml2pdf.utils import generate_pdf
+from .models import Order, OrderItem
+from django.shortcuts import render, HttpResponse
+from django.template.loader import render_to_string
+from django_xhtml2pdf.utils import generate_pdf
+from .models import Order, OrderItem
+from django.shortcuts import render
+from .models import Order, OrderItem
+
 
 
 # Create your views here.
@@ -690,46 +702,46 @@ def accessory_payment(request):
     return render(request, "payment_accessories.html", context=context)
 
 
+
 @csrf_exempt
 def payment_confirm(request):
     if request.method == "POST":
-        try:
-            payment_id = request.POST.get('razorpay_payment_id', '')
-            razorpay_order_id = request.POST.get('razorpay_order_id', '')
-            signature = request.POST.get('razorpay_signature', '')
-            params_dict = {
-                'razorpay_order_id': razorpay_order_id,
-                'razorpay_payment_id': payment_id,
-                'razorpay_signature': signature,
-            }
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature,
+        }
 
-            result = razorpay_client.utility.verify_payment_signature(params_dict)
-            if result is not None:
-                # Fetch the order using razorpay_order_id
-                order = Order.objects.get(razorpay_order_id=razorpay_order_id)
-                # Update the payment status and create a Payment instance
-                order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
-                order.save()
-                
-                # Fetch the cart items associated with the order
-                cart_items = AddToCart.objects.filter(order=order)
-                
-                # Loop through cart items to update accessory stock and delete cart items
-                for item in cart_items:
-                    accessory = item.accessory
-                    if accessory.quantity >= item.quantity:
-                        accessory.quantity -= item.quantity
-                        accessory.save()
-                    else:
-                        return render(request, 'paymentfail.html', {'messages': 'Insufficient stock'})
-                
-                cart_items.delete()  # Delete cart items after successful payment
-                
-                return render(request, "paymentsuccess.html")
-            else:
-                return render(request, "paymentfail.html")
-        except Exception as e:
-            print(f"Error processing payment: {e}")
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+        if result is not None:
+            # Fetch the order using razorpay_order_id
+            order = Order.objects.get(razorpay_order_id=razorpay_order_id)
+            # Update the payment status and create a Payment instance
+            order.payment_status = Order.PaymentStatusChoices.SUCCESSFUL
+            order.save()
+            
+            # Fetch the cart items associated with the current user
+            cart_items = AddToCart.objects.filter(user=request.user)
+
+            # Loop through cart items to update accessory stock and delete cart items
+            for item in cart_items:
+                accessory = item.accessory
+                if accessory.quantity >= item.quantity:
+                    accessory.quantity -= item.quantity
+                    accessory.save()
+                else:
+                    return render(request, 'paymentfail.html', {'messages': 'Insufficient stock'})
+
+            cart_items.delete()  # Delete cart items after successful payment
+
+            # Redirect to the invoice area with the order ID
+            return redirect('home')
+        else:
             return render(request, "paymentfail.html")
     else:
         return redirect('accessory_payment')  # Redirect to the payment page if not a POST request
+
+
