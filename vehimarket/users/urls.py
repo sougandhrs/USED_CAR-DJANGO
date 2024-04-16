@@ -47,4 +47,5 @@ urlpatterns = [
     path('accessory-payment/', views.accessory_payment, name='accessory_payment'),
     path('payment/confirm/', views.payment_confirm, name='payment_confirm'),
     path('orders/', views.view_orders, name='view_orders'),
+    path('download_pdf/<int:order_id>/', views.download_pdf, name='download_pdf'),
 ]

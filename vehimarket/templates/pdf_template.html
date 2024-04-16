@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .invoice-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        .invoice-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .invoice-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .invoice-items th, .invoice-items td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        .invoice-total {
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h1>Invoice</h1>
+        </div>
+        <div class="invoice-details">
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>Date:</strong> {{ order.payment_datetime }}</p>
+            <p><strong>User:</strong> {{ order.user.username }}</p>
+        </div>
+        <table class="invoice-items">
+            <thead>
+                <tr>
+                    <th>Accessory Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.orderitem_set.all %}
+                <tr>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.accessory.price }}</td>
+                    <td>{{ total_amount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="invoice-total">
+            <p><strong>Total Amount:</strong> {{ total_amount }}</p>
+        </div>
+    </div>
+</body>
+</html>

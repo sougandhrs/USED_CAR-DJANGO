@@ -29,14 +29,23 @@ from decimal import Decimal
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django_xhtml2pdf.utils import generate_pdf
 from .models import Order, OrderItem
 from django.shortcuts import render, HttpResponse
 from django.template.loader import render_to_string
-from django_xhtml2pdf.utils import generate_pdf
 from .models import Order, OrderItem
 from django.shortcuts import render
 from .models import Order, OrderItem
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.conf import settings
+from django_xhtml2pdf.utils import pdf_decorator
+from .models import Order
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.conf import settings
+from xhtml2pdf import pisa
+from .models import Order
 
 
 
@@ -753,3 +762,20 @@ def view_orders(request):
     context = {'orders': orders}
     return render(request, 'orders.html', context)
 
+
+def download_pdf(request, order_id):
+    order = Order.objects.get(id=order_id)
+    total_amount = sum(item.quantity * item.accessory.price for item in order.orderitem_set.all())
+
+    template_path = 'pdf_template.html'
+    context = {'order': order, 'total_amount': total_amount}
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_{order_id}.pdf"'
+
+    template = get_template(template_path)
+    html = template.render(context)
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response

@@ -301,7 +301,7 @@
                       <li class="level0 parent drop-menu"><a href="#"><span>Pages</span> </a> 
                         <!--sub sub category-->
                         <ul class="level1">
-                          <li class="level1"> <a href="about-us.html"> <span>About us</span> </a> </li>
+                          
                           <li class="level1 nav-10-4"> <a href="{% url 'cart' %}"> <span>Cart Page</span> </a> </li>
                           <li class="level1 first parent"><a href="checkout.html"><span>Checkout</span></a> 
                             <!--sub sub category-->
@@ -313,16 +313,12 @@
                           </li>
                           <li class="level1 nav-10-4"> <a href="{% url 'accessories_wishlist' %}"> <span>Wishlist</span> </a> </li>
                           <li class="level1"> <a href="{% url 'view_orders' %}"> <span>Orders</span> </a> </li>
-                          <li class="level1"> <a href="multiple-addresses.html"> <span>Multiple Addresses</span> </a> </li>
-                          <li class="level1"><a href="contact-us.html"><span>Contact us</span></a> </li>
-                          <li class="level1"><a href="404error.html"><span>404 Error Page</span></a> </li>
-                          <li class="level1"><a href="login.html"><span>Login Page</span></a> </li>
                           <li class="level1"><a href="/view_profile"><span>View Profile</span></a> </li>
                           <li class="level1"><a href="/update_profile"><span>Update Profile</span></a> </li>
                           {% comment %} <li class="level1"><a href="newsletter.html"><span>Newsletter</span></a> </li> {% endcomment %}
                         </ul>
                       </li>
-                      <li class="fl-custom-tabmenulink mega-menu"> <a href="#" class="level-top"> <span>Custom</span> </a>
+                      {% comment %} <li class="fl-custom-tabmenulink mega-menu"> <a href="#" class="level-top"> <span>Custom</span> </a>
                         <div class="level0-wrapper fl-custom-tabmenu" style="left: 0px; display: none;">
                           <div class="container">
                             <div class="header-nav-dropdown-wrapper clearer">
@@ -349,7 +345,7 @@
                             </div>
                           </div>
                         </div>
-                      </li>
+                      </li> {% endcomment %}
                     </ul>
                     <!--nav--> 
                   </div>
