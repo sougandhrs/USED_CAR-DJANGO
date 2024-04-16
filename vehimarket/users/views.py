@@ -745,3 +745,11 @@ def payment_confirm(request):
         return redirect('accessory_payment')  # Redirect to the payment page if not a POST request
 
 
+def view_orders(request):
+    # Assuming you have a way to identify the current user
+    user = request.user
+    # Filter orders by user and payment status
+    orders = Order.objects.filter(user=user, payment_status=Order.PaymentStatusChoices.SUCCESSFUL)
+    context = {'orders': orders}
+    return render(request, 'orders.html', context)
+
